@@ -1,0 +1,283 @@
+From 3c169bf779d00b7384c58f3a3f839cd699aa4ca9 Mon Sep 17 00:00:00 2001
+From: Serhey Popovych <serhe.popovych@gmail.com>
+Date: Wed, 26 Jan 2022 22:39:13 +0200
+Subject: [PATCH 07/11] ipv4: Select best matched address in inet_select_addr()
+ when possible
+
+Picking first matched to @scope and optionally @dst isn't acceptable in
+some situations:
+
+    # Two non-local subnets on loopback interface
+    ip -4 addr add 192.168.2.254/24 dev lo noprefixroute
+    ip -4 addr add 192.168.1.254/24 dev lo noprefixroute
+
+    # Add emulated pc with network namespace and link it to the host
+    ip link add dev veth10a type veth peer dev veth10b
+    ip netns add pc10
+    ip link set dev veth10b netns pc10
+    ip -n pc10 link set dev lo up
+    ip -n pc10 link set dev veth10b up
+    ip -n pc10 -4 addr add 192.168.1.1/24 dev veth10b
+    # ... reply to ARP requests sent to target IP configured
+    # on incoming interface with same subnet as source IP
+    ip netns exec pc10 sysctl -w net/ipv4/conf/veth10b/arp_ignore=2
+
+    # add route on host to assigned IP
+    ip link set dev veth10a up
+    ip -4 route add 192.168.1.1/32 dev veth10a src 192.168.1.254
+
+    # try to ping from host
+    ping -q -c3 192.168.1.1
+    PING 192.168.1.1 (192.168.1.1) 56(84) bytes of data.
+
+    --- 192.168.1.1 ping statistics ---
+    3 packets transmitted, 0 received, +3 errors, 100% packet loss, time 1999ms
+    pipe 3
+
+    # ARP requests sent with wrong source IP
+    tcpdump -iveth10a -nnp -c3 'arp'
+    00:00:15.833598 ARP, Request who-has 192.168.1.1 tell 192.168.2.254, length 28
+    00:00:17.830927 ARP, Request who-has 192.168.1.1 tell 192.168.2.254, length 28
+    00:00:18.833614 ARP, Request who-has 192.168.1.1 tell 192.168.2.254, length 28
+
+    # emulated pc ignores ARP requests according to arp_ignore=2
+    ip -4 neigh sh dev veth10a
+    192.168.1.1  INCOMPLETE
+    ip -n pc10 -4 neigh sh dev veth10b
+    192.168.1.254 lladdr 02:1c:0e:ba:f7:09 STALE
+
+It is obvious that inet_select_addr() should prefer primary IP whose
+subnet has longest match with non-zero @dst. Order in which network
+devices preferred kept unmodified with VRF/loopback interface being
+preferred over last resort case where rest of network devices in same
+namespace and VRF if set considered.
+
+Optimize last resort case depending on number of network devices
+available in namespace and number of IP addresses present in cross
+namespace hash table:
+
+    If number of IPs in hash table less than number of
+    network devices in current namespace:
+        iterate over all IPs in hash table and
+        iterate over all netdevs in namespace otherwise
+
+Note that number of network devices in namespace calculated based
+on last used ifindex that may not reflect exact number of network
+devices in namespace. For example when network device with ifindex
+number smaller or equal to number of IPs in hash table being
+deleted that sets net->ifindex to ifindex - 1 of deleted network
+device.
+
+To avoid last resort case for above example it is suggested to assign
+primary IPs with corresponding subnet prefix to loopback interface.
+
+Signed-off-by: Serhey Popovych <serhe.popovych@gmail.com>
+---
+ net/ipv4/devinet.c | 143 ++++++++++++++++++++++++++++++++++-------------------
+ 1 file changed, 91 insertions(+), 52 deletions(-)
+
+diff --git a/net/ipv4/devinet.c b/net/ipv4/devinet.c
+index 88b6120..d558b6b 100644
+--- a/net/ipv4/devinet.c
++++ b/net/ipv4/devinet.c
+@@ -117,6 +117,7 @@ struct inet_fill_args {
+ #define IN4_ADDR_HSIZE		(1U << IN4_ADDR_HSIZE_SHIFT)
+ 
+ static struct hlist_head inet_addr_lst[IN4_ADDR_HSIZE];
++static unsigned long nr_inet_addrs __read_mostly;
+ 
+ static u32 inet_addr_hash(const struct net *net, __be32 addr)
+ {
+@@ -131,12 +132,14 @@ static void inet_hash_insert(struct net *net, struct in_ifaddr *ifa)
+ 
+ 	ASSERT_RTNL();
+ 	hlist_add_head_rcu(&ifa->hash, &inet_addr_lst[hash]);
++	nr_inet_addrs++;
+ }
+ 
+ static void inet_hash_remove(struct in_ifaddr *ifa)
+ {
+ 	ASSERT_RTNL();
+ 	hlist_del_init_rcu(&ifa->hash);
++	nr_inet_addrs--;
+ }
+ 
+ /**
+@@ -1282,86 +1285,122 @@ int inet_gifconf(struct net_device *dev, char __user *buf, int len, int size)
+ 	return done;
+ }
+ 
+-static __be32 in_dev_select_addr(const struct in_device *in_dev,
+-				 int scope)
++static int in_dev_match_addr(const struct in_ifaddr *ifa, __be32 dst, int plen,
++			     __be32 *addr)
+ {
++	if (ifa->ifa_flags & IFA_F_SECONDARY)
++		return plen;
++
++	if (!*addr) {
++		*addr = ifa->ifa_local;
++		if (!dst)
++			return plen;
++	}
++	if (ifa->ifa_prefixlen > plen &&
++	    inet_ifa_match(dst, ifa)) {
++		*addr = ifa->ifa_local;
++		return ifa->ifa_prefixlen;
++	}
++
++	return plen;
++}
++
++static int in_dev_select_addr(const struct net_device *dev,
++			      __be32 dst, int scope, __be32 *addr)
++{
++	const struct in_device *in_dev;
+ 	const struct in_ifaddr *ifa;
++	int plen = 0;
+ 
+-	in_dev_for_each_ifa_rcu(ifa, in_dev) {
+-		if (ifa->ifa_flags & IFA_F_SECONDARY)
+-			continue;
+-		if (ifa->ifa_scope != RT_SCOPE_LINK &&
+-		    ifa->ifa_scope <= scope)
+-			return ifa->ifa_local;
++	in_dev = __in_dev_get_rcu(dev);
++	if (in_dev) {
++		in_dev_for_each_ifa_rcu(ifa, in_dev) {
++			if (ifa->ifa_scope > scope ||
++			    ifa->ifa_scope == RT_SCOPE_LINK)
++				continue;
++			plen = in_dev_match_addr(ifa, dst, plen, addr);
++		}
+ 	}
+ 
+-	return 0;
++	return plen;
+ }
+ 
+ __be32 inet_select_addr(const struct net_device *dev, __be32 dst, int scope)
+ {
+ 	const struct in_ifaddr *ifa;
+ 	__be32 addr = 0;
+-	unsigned char localnet_scope = RT_SCOPE_HOST;
+ 	struct in_device *in_dev;
+ 	struct net *net = dev_net(dev);
+-	int master_idx;
++	int master_idx, plen = 0;
+ 
+ 	rcu_read_lock();
++
+ 	in_dev = __in_dev_get_rcu(dev);
+-	if (!in_dev)
+-		goto no_in_dev;
++	if (in_dev) {
++		unsigned char localnet_scope;
+ 
+-	if (unlikely(IN_DEV_ROUTE_LOCALNET(in_dev)))
+-		localnet_scope = RT_SCOPE_LINK;
++		if (unlikely(IN_DEV_ROUTE_LOCALNET(in_dev)))
++			localnet_scope = RT_SCOPE_LINK;
++		else
++			localnet_scope = RT_SCOPE_HOST;
+ 
+-	in_dev_for_each_ifa_rcu(ifa, in_dev) {
+-		if (ifa->ifa_flags & IFA_F_SECONDARY)
+-			continue;
+-		if (min(ifa->ifa_scope, localnet_scope) > scope)
+-			continue;
+-		if (!dst || inet_ifa_match(dst, ifa)) {
+-			addr = ifa->ifa_local;
+-			break;
++		in_dev_for_each_ifa_rcu(ifa, in_dev) {
++			if (min(ifa->ifa_scope, localnet_scope) > scope)
++				continue;
++			plen = in_dev_match_addr(ifa, dst, plen, &addr);
+ 		}
+-		if (!addr)
+-			addr = ifa->ifa_local;
++
++		if (plen)
++			goto out_unlock;
+ 	}
+ 
+-	if (addr)
+-		goto out_unlock;
+-no_in_dev:
+ 	master_idx = l3mdev_master_ifindex_rcu(dev);
+ 
+-	/* For VRFs, the VRF device takes the place of the loopback device,
+-	 * with addresses on it being preferred.  Note in such cases the
+-	 * loopback device will be among the devices that fail the master_idx
+-	 * equality check in the loop below.
+-	 */
+-	if (master_idx &&
+-	    (dev = dev_get_by_index_rcu(net, master_idx)) &&
+-	    (in_dev = __in_dev_get_rcu(dev))) {
+-		addr = in_dev_select_addr(in_dev, scope);
+-		if (addr)
+-			goto out_unlock;
++	if (master_idx) {
++		/* For VRFs, the VRF device takes the place of the loopback device,
++		 * with addresses on it being preferred.  Note in such cases the
++		 * loopback device will be among the devices that fail the master_idx
++		 * equality check in the loop below.
++		 */
++		dev = dev_get_by_index_rcu(net, master_idx);
++	} else {
++		/* Not loopback addresses on loopback should be preferred
++		 * in this case. Note that loopback cannot be enslaved to VRF.
++		 */
++		dev = net->loopback_dev;
+ 	}
+ 
+-	/* Not loopback addresses on loopback should be preferred
+-	   in this case. It is important that lo is the first interface
+-	   in dev_base list.
+-	 */
+-	for_each_netdev_rcu(net, dev) {
+-		if (l3mdev_master_ifindex_rcu(dev) != master_idx)
+-			continue;
++	if (dev && in_dev_select_addr(dev, dst, scope, &addr))
++		goto out_unlock;
+ 
+-		in_dev = __in_dev_get_rcu(dev);
+-		if (!in_dev)
+-			continue;
++	if (nr_inet_addrs < net->ifindex) {
++		int i;
+ 
+-		addr = in_dev_select_addr(in_dev, scope);
+-		if (addr)
+-			goto out_unlock;
++		/* Fewer addresses in all namespaces than number of network
++		 * devices in current namespace. Note that net->ifindex may
++		 * not reflect exact number of network devices in namespace.
++		 */
++		for (i = 0; i < IN4_ADDR_HSIZE; i++) {
++			hlist_for_each_entry_rcu(ifa, &inet_addr_lst[i], hash) {
++				if (ifa->ifa_scope > scope ||
++				    ifa->ifa_scope == RT_SCOPE_LINK)
++					continue;
++				dev = ifa->ifa_dev->dev;
++				if (!net_eq(net, dev_net(dev)))
++					continue;
++				if (l3mdev_master_ifindex_rcu(dev) != master_idx)
++					continue;
++				plen = in_dev_match_addr(ifa, dst, plen, &addr);
++			}
++		}
++	} else {
++		for_each_netdev_rcu(net, dev) {
++			if (l3mdev_master_ifindex_rcu(dev) != master_idx)
++				continue;
++			(void)in_dev_select_addr(dev, dst, scope, &addr);
++		}
+ 	}
++
+ out_unlock:
+ 	rcu_read_unlock();
+ 	return addr;
+-- 
+1.8.3.1
+

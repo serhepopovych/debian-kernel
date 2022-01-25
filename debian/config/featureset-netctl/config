@@ -1,0 +1,957 @@
+##
+## file: arch/x86/Kconfig
+##
+CONFIG_BOOTPARAM_HOTPLUG_CPU0=y
+CONFIG_MAXSMP=n
+CONFIG_NR_CPUS=64
+CONFIG_NODES_SHIFT=4
+CONFIG_SCHED_MC_PRIO=n
+CONFIG_NUMA_EMU=n
+CONFIG_AMD_MEM_ENCRYPT=n
+CONFIG_X86_16BIT=n
+CONFIG_X86_VSYSCALL_EMULATION=n
+CONFIG_LEGACY_VSYSCALL_NONE=y
+CONFIG_X86_IOPL_IOPERM=n
+CONFIG_MODIFY_LDT_SYSCALL=n
+CONFIG_LIVEPATCH=n
+CONFIG_I8K=n
+
+##
+## file: arch/x86/Kconfig.cpu
+##
+CONFIG_PROCESSOR_SELECT=y
+CONFIG_CPU_SUP_HYGON=n
+CONFIG_CPU_SUP_CENTAUR=n
+CONFIG_CPU_SUP_ZHAOXIN=n
+
+##
+## file: arch/x86/kvm/Kconfig
+##
+CONFIG_KVM=n
+
+##
+## file: arch/x86/xen/Kconfig
+##
+CONFIG_XEN=n
+
+##
+## file: kernel/power/Kconfig
+##
+CONFIG_SUSPEND=n
+CONFIG_HIBERNATION=n
+CONFIG_HIBERNATE_CALLBACKS=n
+
+##
+## file: kernel/time/Kconfig
+##
+## choice: Timer tick handling
+# CONFIG_HZ_PERIODIC is not set
+# CONFIG_NO_HZ_IDLE is not set
+CONFIG_NO_HZ_FULL=y
+## end choice
+
+##
+## file: kernel/rcu/Kconfig
+##
+CONFIG_RCU_NOCB_CPU=y
+
+##
+## file: kernel/Kconfig.preempt
+##
+## choice: Preemption Model
+CONFIG_PREEMPT_NONE=y
+# CONFIG_PREEMPT_VOLUNTARY is not set
+# CONFIG_PREEMPT is not set
+## end choice
+
+##
+## file: kernel/Kconfig.hz
+##
+## choice: Timer frequency
+CONFIG_HZ_100=y
+# CONFIG_HZ_250 is not set
+# CONFIG_HZ_300 is not set
+# CONFIG_HZ_1000 is not set
+## end choice
+
+##
+## file: kernel/power/Kconfig
+##
+CONFIG_WQ_POWER_EFFICIENT_DEFAULT=y
+
+##
+## file: drivers/cpufreq/Kconfig
+##
+CONFIG_X86_INTEL_PSTATE=n
+CONFIG_X86_PCC_CPUFREQ=m
+CONFIG_X86_ACPI_CPUFREQ=y
+CONFIG_X86_ACPI_CPUFREQ_CPB=y
+CONFIG_X86_POWERNOW_K8=m
+CONFIG_X86_AMD_FREQ_SENSITIVITY=m
+CONFIG_X86_SPEEDSTEP_CENTRINO=n
+CONFIG_X86_P4_CLOCKMOD=m
+
+CONFIG_CPU_FREQ_GOV_PERFORMANCE=y
+CONFIG_CPU_FREQ_GOV_POWERSAVE=m
+CONFIG_CPU_FREQ_GOV_USERSPACE=m
+CONFIG_CPU_FREQ_GOV_ONDEMAND=m
+CONFIG_CPU_FREQ_GOV_CONSERVATIVE=y
+CONFIG_CPU_FREQ_GOV_SCHEDUTIL=n
+
+## choice: Default CPUFreq governor
+# CONFIG_CPU_FREQ_DEFAULT_GOV_PERFORMANCE is not set
+# CONFIG_CPU_FREQ_DEFAULT_GOV_POWERSAVE is not set
+# CONFIG_CPU_FREQ_DEFAULT_GOV_USERSPACE is not set
+# CONFIG_CPU_FREQ_DEFAULT_GOV_ONDEMAND is not set
+CONFIG_CPU_FREQ_DEFAULT_GOV_CONSERVATIVE=y
+# CONFIG_CPU_FREQ_DEFAULT_GOV_SCHEDUTIL is not set
+## end choice
+
+##
+## file: drivers/cpuidle/Kconfig
+##
+CONFIG_CPU_IDLE=y
+CONFIG_CPU_IDLE_GOV_MENU=y
+
+##
+## file: init/Kconfig
+##
+CONFIG_BPF_JIT_ALWAYS_ON=y
+CONFIG_EMBEDDED=y
+CONFIG_EXPERT=y
+CONFIG_SGETMASK_SYSCALL=n
+CONFIG_SYSFS_SYSCALL=n
+
+##
+## file: block/partitions/Kconfig
+##
+CONFIG_PARTITION_ADVANCED=y
+CONFIG_ACORN_PARTITION=n
+CONFIG_AIX_PARTITION=n
+CONFIG_OSF_PARTITION=n
+CONFIG_AMIGA_PARTITION=n
+CONFIG_ATARI_PARTITION=n
+CONFIG_MAC_PARTITION=n
+CONFIG_SGI_PARTITION=n
+CONFIG_ULTRIX_PARTITION=n
+CONFIG_SUN_PARTITION=n
+CONFIG_KARMA_PARTITION=n
+CONFIG_EFI_PARTITION=y
+CONFIG_SYSV68_PARTITION=n
+CONFIG_MSDOS_PARTITION=y
+CONFIG_BSD_DISKLABEL=y
+CONFIG_MINIX_SUBPARTITION=n
+CONFIG_SOLARIS_X86_PARTITION=y
+CONFIG_UNIXWARE_DISKLABEL=n
+
+##
+## file: mm/Kconfig
+##
+CONFIG_KSM=n
+CONFIG_MEMORY_HOTPLUG=n
+CONFIG_ZSWAP=n
+CONFIG_ZPOOL=n
+CONFIG_ZBUD=n
+CONFIG_ZSMALLOC=m
+
+##
+## file: drivers/block/zram/Kconfig
+##
+CONFIG_ZRAM=m
+CONFIG_ZRAM_WRITEBACK=y
+CONFIG_ZRAM_MEMORY_TRACKING=y
+
+##
+## file: security/Kconfig
+##
+CONFIG_SECURITY_DMESG_RESTRICT=y
+CONFIG_SECURITY_PERF_EVENTS_RESTRICT=y
+CONFIG_HARDENED_USERCOPY=y
+CONFIG_FORTIFY_SOURCE=y
+CONFIG_SECURITY_NETWORK_XFRM=n
+CONFIG_SECURITY_TOMOYO=n
+CONFIG_SECURITY_YAMA=n
+
+##
+## file: drivers/firmware/efi/Kconfig
+##
+CONFIG_EFI_RCI2_TABLE=y
+
+##
+## file: drivers/staging/Kconfig
+##
+CONFIG_STAGING=n
+
+##
+## file: certs/Kconfig
+##
+#. Certificate paths are resolved relative to debian/build/source_netctl
+CONFIG_SYSTEM_TRUSTED_KEYS="../../certs/debian-uefi-certs.pem"
+
+##
+## file: net/ipv4/Kconfig
+##
+CONFIG_NET_IPVTI=n
+CONFIG_NET_FOU_IP_TUNNELS=n
+CONFIG_NET_FOU=n
+CONFIG_INET_AH=n
+CONFIG_INET_ESP=n
+CONFIG_INET_IPCOMP=n
+
+##
+## file: net/ipv6/Kconfig
+##
+CONFIG_IPV6_VTI=n
+CONFIG_IPV6_MIP6=n
+CONFIG_IPV6_ILA=n
+CONFIG_INET6_AH=n
+CONFIG_INET6_ESP=n
+CONFIG_INET6_IPCOMP=n
+
+##
+## file: net/xfrm/Kconfig
+##
+CONFIG_NET_KEY=n
+CONFIG_XFRM_USER=n
+
+##
+## file: net/netfilter/ipvs/Kconfig
+##
+CONFIG_IP_VS=n
+
+##
+## file: net/ipv4/netfilter/Kconfig
+##
+CONFIG_IP_NF_SECURITY=n
+
+##
+## file: net/ipv6/netfilter/Kconfig
+##
+CONFIG_IP6_NF_SECURITY=n
+
+##
+## file: net/netlabel/Kconfig
+##
+CONFIG_NETLABEL=n
+
+##
+## file: net/mpls/Kconfig
+##
+CONFIG_MPLS=n
+
+##
+## file: net/can/Kconfig
+##
+CONFIG_CAN=n
+
+##
+## file: net/bluetooth/Kconfig
+##
+CONFIG_BT=n
+
+##
+## file: net/wimax/Kconfig
+##
+CONFIG_WIMAX=n
+
+##
+## file: net/rfkill/Kconfig
+##
+CONFIG_RFKILL=n
+
+##
+## file: net/9p/Kconfig
+##
+CONFIG_NET_9P=n
+
+##
+## file: net/nfc/Kconfig
+##
+CONFIG_NFC=n
+
+##
+## file: net/ieee802154/Kconfig
+##
+CONFIG_IEEE802154=n
+
+##
+## file: net/batman-adv/Kconfig
+##
+CONFIG_BATMAN_ADV=n
+
+##
+## file: net/openvswitch/Kconfig
+##
+CONFIG_OPENVSWITCH=n
+
+##
+## file: net/dsa/Kconfig
+##
+CONFIG_NET_DSA=n
+
+##
+## file: net/switchdev/Kconfig
+##
+CONFIG_NET_SWITCHDEV=n
+
+##
+## file: net/nsh/Kconfig
+##
+CONFIG_NET_NSH=n
+
+##
+## file: net/6lowpan/Kconfig
+##
+CONFIG_6LOWPAN=n
+
+##
+## file: net/atm/Kconfig
+##
+CONFIG_ATM=n
+
+##
+## file: net/phonet/Kconfig
+##
+CONFIG_PHONET=n
+
+##
+## file: net/ax25/Kconfig
+##
+CONFIG_HAMRADIO=n
+
+##
+## file: drivers/net/appletalk/Kconfig
+##
+CONFIG_ATALK=n
+
+##
+## file: net/lapb/Kconfig
+##
+CONFIG_LAPB=n
+
+##
+## file: drivers/net/wireless/Kconfig
+##
+CONFIG_WLAN=n
+
+##
+## file: net/Kconfig
+##
+CONFIG_WIRELESS=n
+
+##
+## file: net/dccp/Kconfig
+##
+CONFIG_IP_DCCP=n
+
+##
+## file: net/sctp/Kconfig
+##
+CONFIG_IP_SCTP=n
+
+##
+## file: net/rds/Kconfig
+##
+CONFIG_RDS=n
+
+##
+## file: net/tipc/Kconfig
+##
+CONFIG_TIPC=n
+
+##
+## file: fs/gfs2/Kconfig
+##
+CONFIG_GFS2_FS=n
+
+##
+## file: fs/ocfs2/Kconfig
+##
+CONFIG_OCFS2_FS=n
+
+##
+## file: fs/dlm/Kconfig
+##
+CONFIG_DLM=n
+
+##
+## file: fs/coda/Kconfig
+##
+CONFIG_CODA_FS=n
+
+##
+## file: fs/afs/Kconfig
+##
+CONFIG_AFS_FS=n
+
+##
+## file: net/rxrpc/Kconfig
+##
+CONFIG_AF_RXRPC=n
+
+##
+## file: fs/ceph/Kconfig
+##
+CONFIG_CEPH_FS=n
+
+##
+## file: fs/nilfs2/Kconfig
+##
+CONFIG_NILFS2_FS=n
+
+##
+## file: fs/hfsplus/Kconfig
+##
+CONFIG_HFSPLUS_FS=n
+
+##
+## file: fs/orangefs/Kconfig
+##
+CONFIG_ORANGEFS_FS=n
+
+##
+## file: fs/adfs/Kconfig
+##
+CONFIG_ADFS_FS=n
+
+##
+## file: fs/affs/Kconfig
+##
+CONFIG_AFFS_FS=n
+
+##
+## file: fs/hfs/Kconfig
+##
+CONFIG_HFS_FS=n
+
+##
+## file: fs/befs/Kconfig
+##
+CONFIG_BEFS_FS=n
+
+##
+## file: fs/bfs/Kconfig
+##
+CONFIG_BFS_FS=n
+
+##
+## file: fs/efs/Kconfig
+##
+CONFIG_EFS_FS=n
+
+##
+## file: fs/freevxfs/Kconfig
+##
+CONFIG_VXFS_FS=n
+
+##
+## file: fs/minix/Kconfig
+##
+CONFIG_MINIX_FS=n
+
+##
+## file: fs/omfs/Kconfig
+##
+CONFIG_OMFS_FS=n
+
+##
+## file: fs/hpfs/Kconfig
+##
+CONFIG_HPFS_FS=n
+
+##
+## file: fs/qnx4/Kconfig
+##
+CONFIG_QNX4FS_FS=n
+
+##
+## file: fs/qnx6/Kconfig
+##
+CONFIG_QNX6FS_FS=n
+
+##
+## file: fs/sysv/Kconfig
+##
+CONFIG_SYSV_FS=n
+
+##
+## file: fs/ufs/Kconfig
+##
+CONFIG_UFS_FS=n
+
+##
+## file: fs/erofs/Kconfig
+##
+CONFIG_EROFS_FS=n
+
+##
+## file: drivers/block/Kconfig
+##
+CONFIG_BLK_DEV_RBD=n
+
+##
+## file: net/ceph/Kconfig
+##
+CONFIG_CEPH_LIB=n
+
+##
+## file: sound/Kconfig
+##
+CONFIG_SOUND=n
+
+##
+## file: drivers/media/Kconfig
+##
+CONFIG_MEDIA_SUPPORT=n
+
+##
+## file: drivers/media/cec/Kconfig
+##
+CONFIG_MEDIA_CEC_SUPPORT=n
+
+##
+## file: drivers/media/rc/Kconfig
+##
+CONFIG_RC_CORE=n
+
+##
+## file: drivers/char/agp/Kconfig
+##
+CONFIG_AGP=n
+
+##
+## file: drivers/gpu/vga/Kconfig
+##
+CONFIG_VGA_ARB=n
+CONFIG_VGA_SWITCHEROO=n
+
+##
+## file: drivers/gpu/drm/Kconfig
+##
+CONFIG_DRM=n
+
+##
+## file: drivers/video/fbdev/Kconfig
+##
+CONFIG_FB=y
+CONFIG_FIRMWARE_EDID=y
+CONFIG_FB_FOREIGN_ENDIAN=n
+CONFIG_FB_MODE_HELPERS=n
+CONFIG_FB_TILEBLITTING=n
+CONFIG_FB_CIRRUS=n
+CONFIG_FB_PM2=n
+CONFIG_FB_CYBER2000=n
+CONFIG_FB_ARC=n
+CONFIG_FB_ASILIANT=n
+CONFIG_FB_IMSTT=n
+CONFIG_FB_VGA16=n
+CONFIG_FB_UVESA=n
+CONFIG_FB_VESA=n
+CONFIG_FB_EFI=y
+CONFIG_FB_N411=n
+CONFIG_FB_HGA=n
+CONFIG_FB_OPENCORES=n
+CONFIG_FB_S1D13XXX=n
+CONFIG_FB_I740=n
+CONFIG_FB_LE80578=n
+CONFIG_FB_MATROX=n
+CONFIG_FB_RADEON=n
+CONFIG_FB_ATY128=n
+CONFIG_FB_ATY=n
+CONFIG_FB_S3=n
+CONFIG_FB_SAVAGE=n
+CONFIG_FB_SIS=n
+CONFIG_FB_VIA=n
+CONFIG_FB_NEOMAGIC=n
+CONFIG_FB_KYRO=n
+CONFIG_FB_3DFX=n
+CONFIG_FB_VOODOO1=n
+CONFIG_FB_VT8623=n
+CONFIG_FB_TRIDENT=n
+CONFIG_FB_ARK=n
+CONFIG_FB_PM3=n
+CONFIG_FB_CARMINE=n
+CONFIG_FB_SMSCUFX=n
+CONFIG_FB_UDL=n
+CONFIG_FB_IBM_GXT4500=n
+CONFIG_FB_VIRTUAL=n
+CONFIG_FB_METRONOME=n
+CONFIG_FB_MB862XX=n
+CONFIG_FB_HYPERV=n
+CONFIG_FB_SIMPLE=n
+CONFIG_FB_SM712=n
+
+##
+## file: drivers/video/backlight/Kconfig
+##
+CONFIG_LCD_CLASS_DEVICE=n
+CONFIG_BACKLIGHT_CLASS_DEVICE=n
+
+##
+## file: drivers/video/console/Kconfig
+##
+CONFIG_VGA_CONSOLE=y
+CONFIG_FRAMEBUFFER_CONSOLE=y
+CONFIG_FRAMEBUFFER_CONSOLE_LEGACY_ACCELERATION=n
+CONFIG_FRAMEBUFFER_CONSOLE_DETECT_PRIMARY=n
+CONFIG_FRAMEBUFFER_CONSOLE_ROTATION=y
+CONFIG_FRAMEBUFFER_CONSOLE_DEFERRED_TAKEOVER=n
+
+##
+## file: drivers/video/logo/Kconfig
+##
+CONFIG_LOGO=n
+
+##
+## file: drivers/input/Kconfig
+##
+CONFIG_INPUT_JOYDEV=n
+
+##
+## file: drivers/input/joystick/Kconfig
+##
+CONFIG_INPUT_JOYSTICK=n
+
+##
+## file: drivers/input/gameport/Kconfig
+##
+CONFIG_GAMEPORT=n
+
+##
+## file: drivers/input/tablet/Kconfig
+##
+CONFIG_INPUT_TABLET=n
+
+##
+## file: drivers/input/touchscreen/Kconfig
+##
+CONFIG_INPUT_TOUCHSCREEN=n
+
+##
+## file: drivers/input/keyboard/Kconfig
+##
+CONFIG_KEYBOARD_ADP5588=n
+CONFIG_KEYBOARD_ADP5589=n
+CONFIG_KEYBOARD_APPLESPI=n
+CONFIG_KEYBOARD_QT1050=n
+CONFIG_KEYBOARD_QT1070=n
+CONFIG_KEYBOARD_QT2160=n
+CONFIG_KEYBOARD_DLINK_DIR685=n
+CONFIG_KEYBOARD_LKKBD=n
+CONFIG_KEYBOARD_GPIO=n
+CONFIG_KEYBOARD_GPIO_POLLED=n
+CONFIG_KEYBOARD_TCA6416=n
+CONFIG_KEYBOARD_TCA8418=n
+CONFIG_KEYBOARD_MATRIX=n
+CONFIG_KEYBOARD_LM8323=n
+CONFIG_KEYBOARD_LM8333=n
+CONFIG_KEYBOARD_MAX7359=n
+CONFIG_KEYBOARD_MCS=n
+CONFIG_KEYBOARD_MPR121=n
+CONFIG_KEYBOARD_NEWTON=n
+CONFIG_KEYBOARD_OPENCORES=n
+CONFIG_KEYBOARD_SAMSUNG=n
+CONFIG_KEYBOARD_STOWAWAY=n
+CONFIG_KEYBOARD_SUNKBD=n
+CONFIG_KEYBOARD_TM2_TOUCHKEY=n
+CONFIG_KEYBOARD_XTKBD=n
+
+##
+## file: drivers/input/mouse/Kconfig
+##
+CONFIG_MOUSE_SERIAL=n
+CONFIG_MOUSE_APPLETOUCH=n
+CONFIG_MOUSE_BCM5974=n
+CONFIG_MOUSE_CYAPA=n
+CONFIG_MOUSE_ELAN_I2C=n
+CONFIG_MOUSE_VSXXXAA=n
+CONFIG_MOUSE_GPIO=n
+CONFIG_MOUSE_SYNAPTICS_I2C=n
+CONFIG_MOUSE_SYNAPTICS_USB=n
+
+##
+## file: drivers/input/misc/Kconfig
+##
+CONFIG_INPUT_AD714X=n
+CONFIG_INPUT_BMA150=n
+CONFIG_INPUT_E3X0_BUTTON=n
+CONFIG_INPUT_MMA8450=n
+CONFIG_INPUT_APANEL=n
+CONFIG_INPUT_GPIO_BEEPER=n
+CONFIG_INPUT_GPIO_DECODER=n
+CONFIG_INPUT_GPIO_VIBRA=n
+CONFIG_INPUT_ATLAS_BTNS=n
+CONFIG_INPUT_ATI_REMOTE2=n
+CONFIG_INPUT_KEYSPAN_REMOTE=n
+CONFIG_INPUT_KXTJ9=n
+CONFIG_INPUT_POWERMATE=n
+CONFIG_INPUT_YEALINK=n
+CONFIG_INPUT_CM109=n
+CONFIG_INPUT_REGULATOR_HAPTIC=n
+CONFIG_INPUT_AXP20X_PEK=n
+CONFIG_INPUT_PCF8574=n
+CONFIG_INPUT_PWM_BEEPER=n
+CONFIG_INPUT_PWM_VIBRA=n
+CONFIG_INPUT_GPIO_ROTARY_ENCODER=n
+CONFIG_INPUT_ADXL34X=n
+CONFIG_INPUT_IMS_PCU=n
+CONFIG_INPUT_IQS269A=n
+CONFIG_INPUT_CMA3000=n
+CONFIG_INPUT_IDEAPAD_SLIDEBAR=n
+CONFIG_INPUT_SOC_BUTTON_ARRAY=n
+CONFIG_INPUT_DRV260X_HAPTICS=n
+CONFIG_INPUT_DRV2665_HAPTICS=n
+CONFIG_INPUT_DRV2667_HAPTICS=n
+
+##
+## file: drivers/pcmcia/Kconfig
+##
+CONFIG_PCCARD=n
+
+##
+## file: drivers/mmc/Kconfig
+##
+CONFIG_MMC=n
+
+##
+## file: drivers/memstick/Kconfig
+##
+CONFIG_MEMSTICK=n
+
+##
+## file: drivers/accessibility/Kconfig
+##
+CONFIG_ACCESSIBILITY=n
+
+##
+## file: drivers/mtd/Kconfig
+##
+CONFIG_MTD=n
+
+##
+## file: drivers/firewire/Kconfig
+##
+CONFIG_FIREWIRE=n
+
+##
+## file: drivers/firewire/Kconfig
+##
+CONFIG_FIREWIRE_NOSY=n
+
+##
+## file: drivers/infiniband/Kconfig
+##
+CONFIG_INFINIBAND=n
+
+##
+## file: drivers/extcon/Kconfig
+##
+CONFIG_EXTCON=n
+
+##
+## file: drivers/iio/Kconfig
+##
+CONFIG_IIO=n
+
+##
+## file: drivers/message/fusion/Kconfig
+##
+CONFIG_FUSION=n
+
+##
+## file: drivers/soundwire/Kconfig
+##
+CONFIG_SOUNDWIRE=n
+
+##
+## file: drivers/isdn/Kconfig
+##
+CONFIG_ISDN=n
+
+##
+## file: drivers/net/wan/Kconfig
+##
+CONFIG_WAN=n
+
+##
+## file: drivers/net/arcnet/Kconfig
+##
+CONFIG_ARCNET=n
+
+##
+## file: drivers/net/fddi/Kconfig
+##
+CONFIG_FDDI=n
+
+##
+## file: drivers/net/hippi/Kconfig
+##
+CONFIG_HIPPI=n
+
+##
+## file: drivers/net/ethernet/broadcom/Kconfig
+##
+CONFIG_B44=n
+
+##
+## file: drivers/net/wireless/broadcom/b43/Kconfig
+##
+CONFIG_B43=n
+
+##
+## file: drivers/net/wireless/broadcom/b43legacy/Kconfig
+##
+CONFIG_B43LEGACY=n
+
+##
+## file: drivers/ssb/Kconfig
+##
+CONFIG_SSB=n
+CONFIG_SSB_POSSIBLE=n
+
+##
+## drivers/bcma/Kconfig
+##
+CONFIG_BCMA=n
+CONFIG_BCMA_POSSIBLE=n
+
+##
+## file: drivers/block/Kconfig
+##
+CONFIG_CDROM_PKTCDVD=n
+
+##
+## file: drivers/net/Kconfig
+##
+CONFIG_NET_SB1000=n
+
+##
+## file: drivers/ntb/Kconfig
+##
+CONFIG_NTB=n
+
+##
+## file: drivers/mcb/Kconfig
+##
+CONFIG_MCB=n
+
+##
+## file: drivers/hwmon/Kconfig
+##
+CONFIG_SENSORS_APPLESMC=n
+
+##
+## file: drivers/misc/Kconfig
+##
+CONFIG_APDS9802ALS=n
+CONFIG_ISL29003=n
+CONFIG_ISL29020=n
+CONFIG_SENSORS_TSL2550=n
+CONFIG_SENSORS_BH1770=n
+CONFIG_SENSORS_APDS990X=n
+CONFIG_HMC6352=n
+CONFIG_DS1682=n
+CONFIG_CB710_CORE=n
+CONFIG_SENSORS_LIS3_I2C=n
+CONFIG_ALTERA_STAPL=n
+
+##
+## file: drivers/usb/image/Kconfig
+##
+CONFIG_USB_MDC800=n
+CONFIG_USB_MICROTEK=n
+
+##
+## file: drivers/usb/misc/Kconfig
+##
+CONFIG_USB_EMI62=n
+CONFIG_USB_EMI26=n
+CONFIG_USB_ADUTUX=n
+CONFIG_USB_SEVSEG=n
+CONFIG_USB_LEGOTOWER=n
+CONFIG_USB_LCD=n
+CONFIG_USB_CYPRESS_CY7C63=n
+CONFIG_USB_CYTHERM=n
+CONFIG_USB_IDMOUSE=n
+CONFIG_USB_FTDI_ELAN=n
+CONFIG_USB_APPLEDISPLAY=n
+CONFIG_APPLE_MFI_FASTCHARGE=n
+CONFIG_USB_SISUSBVGA=n
+CONFIG_USB_LD=n
+CONFIG_USB_TRANCEVIBRATOR=n
+CONFIG_USB_IOWARRIOR=n
+CONFIG_USB_EHSET_TEST_FIXTURE=n
+CONFIG_USB_ISIGHTFW=n
+CONFIG_USB_YUREX=n
+
+##
+## file: drivers/usb/gadget/Kconfig
+##
+CONFIG_USB_GADGET=n
+
+##
+## file: drivers/android/Kconfig
+##
+CONFIG_ANDROID=n
+
+##
+## file: drivers/macintosh/Kconfig
+##
+CONFIG_MACINTOSH_DRIVERS=n
+
+##
+## file: drivers/platform/goldfish/Kconfig
+##
+CONFIG_GOLDFISH=n
+
+##
+## file: drivers/platform/chrome/Kconfig
+##
+CONFIG_CHROME_PLATFORMS=n
+
+##
+## file: drivers/platform/mellanox/Kconfig
+##
+CONFIG_MELLANOX_PLATFORM=n
+
+##
+## file: drivers/platform/x86/Kconfig
+##
+CONFIG_HUAWEI_WMI=n
+CONFIG_XIAOMI_WMI=n
+CONFIG_APPLE_GMUX=n
+CONFIG_ACERHDF=n
+CONFIG_ACER_WIRELESS=n
+CONFIG_ACER_WMI=n
+CONFIG_ASUS_LAPTOP=n
+CONFIG_ASUS_WIRELESS=n
+CONFIG_ASUS_WMI=n
+CONFIG_EEEPC_LAPTOP=n
+CONFIG_MSI_WMI=n
+CONFIG_SAMSUNG_LAPTOP=n
+CONFIG_SAMSUNG_Q10=n
+CONFIG_TOSHIBA_BT_RFKILL=n
+CONFIG_TOSHIBA_HAPS=n
+CONFIG_TOSHIBA_WMI=n
+CONFIG_LG_LAPTOP=n
+CONFIG_PANASONIC_LAPTOP=n
+CONFIG_TOPSTAR_LAPTOP=n
+CONFIG_FUJITSU_LAPTOP=n
+CONFIG_FUJITSU_TABLET=n
+CONFIG_HP_ACCEL=n
+CONFIG_HP_WIRELESS=n
+CONFIG_HP_WMI=n
+CONFIG_THINKPAD_ACPI=n
+CONFIG_DELL_LAPTOP=n
+CONFIG_DELL_SMO8800=n
+CONFIG_DELL_WMI=n
+CONFIG_DELL_WMI_AIO=n
+CONFIG_DELL_WMI_LED=n
+CONFIG_SENSORS_HDAPS=n
+CONFIG_SURFACE3_WMI=n
+CONFIG_SURFACE_3_BUTTON=n
+CONFIG_SURFACE_3_POWER_OPREGION=n
+CONFIG_SURFACE_PRO3_BUTTON=n
+CONFIG_PCENGINES_APU2=n
+CONFIG_ACPI_CMPC=n
+CONFIG_MLX_PLATFORM=n

@@ -1,0 +1,118 @@
+From 6c0734542757804efcd78a0028da6262d30cb0fe Mon Sep 17 00:00:00 2001
+From: Serhey Popovych <serhe.popovych@gmail.com>
+Date: Thu, 18 Sep 2014 08:15:50 +0300
+Subject: [PATCH 06/11] neighbour: Raise initial size of hash table for
+ advanced router configs
+
+Initial size of neighbour hash table is 1<<3 == 8, which is wery small
+for high performace routers serving thousands of clients, causing
+excessive hash table grows (e.g 8->16->32->...->1024->...). On the other
+hand on such routers memory is not a big concern and we could initially
+allocate much bigger hash table.
+
+Change initial default of neighbour hash table size to 1024, so hash
+table will grow faster when needed.
+
+Also change proxified neighbour hash table size to 1024. Such table not
+grown dynamically, contrary to neighbour table, and such allocation
+remains constant.
+
+Signed-off-by: Serhey Popovych <serhe.popovych@gmail.com>
+---
+ net/core/neighbour.c | 37 ++++++++++++++++++++++++++++---------
+ 1 file changed, 28 insertions(+), 9 deletions(-)
+
+diff --git a/net/core/neighbour.c b/net/core/neighbour.c
+index f6f580e..7b7b43e 100644
+--- a/net/core/neighbour.c
++++ b/net/core/neighbour.c
+@@ -49,7 +49,19 @@
+ 		pr_debug(fmt, ##__VA_ARGS__);	\
+ } while (0)
+ 
+-#define PNEIGH_HASHMASK		0xF
++#ifdef CONFIG_IP_ADVANCED_ROUTER
++#define NEIGH_INIT_HASH_SHIFT	10
++
++#define PNEIGH_HASH_SHIFT	10
++#define PNEIGH_HASH_SIZE	(1 << PNEIGH_HASH_SHIFT)
++#define PNEIGH_HASH_MASK	(PNEIGH_HASH_SIZE - 1)
++#else /* !CONFIG_IP_ADVANCED_ROUTER */
++#define NEIGH_INIT_HASH_SHIFT	3
++
++#define PNEIGH_HASH_SHIFT	4
++#define PNEIGH_HASH_SIZE	(1 << PNEIGH_HASH_SHIFT)
++#define PNEIGH_HASH_MASK	(PNEIGH_HASH_SIZE - 1)
++#endif /* CONFIG_IP_ADVANCED_ROUTER */
+ 
+ static void neigh_timer_handler(struct timer_list *t);
+ static void __neigh_notify(struct neighbour *n, int type, int flags,
+@@ -700,7 +712,7 @@ static u32 pneigh_hash(const void *pkey, unsigned int key_len)
+ 	hash_val ^= (hash_val >> 16);
+ 	hash_val ^= hash_val >> 8;
+ 	hash_val ^= hash_val >> 4;
+-	hash_val &= PNEIGH_HASHMASK;
++	hash_val &= PNEIGH_HASH_MASK;
+ 	return hash_val;
+ }
+ 
+@@ -809,7 +821,7 @@ static int pneigh_ifdown_and_unlock(struct neigh_table *tbl,
+ 	struct pneigh_entry *n, **np, *freelist = NULL;
+ 	u32 h;
+ 
+-	for (h = 0; h <= PNEIGH_HASHMASK; h++) {
++	for (h = 0; h <= PNEIGH_HASH_MASK; h++) {
+ 		np = &tbl->phash_buckets[h];
+ 		while ((n = *np) != NULL) {
+ 			if (!dev || n->dev == dev) {
+@@ -1723,10 +1735,17 @@ void neigh_table_init(int index, struct neigh_table *tbl)
+ 		panic("cannot create neighbour proc dir entry");
+ #endif
+ 
+-	RCU_INIT_POINTER(tbl->nht, neigh_hash_alloc(3));
++	RCU_INIT_POINTER(tbl->nht, neigh_hash_alloc(NEIGH_INIT_HASH_SHIFT));
+ 
+-	phsize = (PNEIGH_HASHMASK + 1) * sizeof(struct pneigh_entry *);
+-	tbl->phash_buckets = kzalloc(phsize, GFP_KERNEL);
++	phsize = PNEIGH_HASH_SIZE * sizeof(struct pneigh_entry *);
++	if (phsize <= PAGE_SIZE) {
++		tbl->phash_buckets = kzalloc(phsize, GFP_KERNEL);
++	} else {
++		tbl->phash_buckets = (struct pneigh_entry **)
++			__get_free_pages(GFP_KERNEL | __GFP_ZERO,
++					 get_order(phsize));
++		kmemleak_alloc(tbl->phash_buckets, phsize, 1, GFP_KERNEL);
++	}
+ 
+ 	if (!tbl->nht || !tbl->phash_buckets)
+ 		panic("cannot allocate neighbour cache hashes");
+@@ -2637,7 +2656,7 @@ static int pneigh_dump_table(struct neigh_table *tbl, struct sk_buff *skb,
+ 
+ 	read_lock_bh(&tbl->lock);
+ 
+-	for (h = s_h; h <= PNEIGH_HASHMASK; h++) {
++	for (h = s_h; h <= PNEIGH_HASH_MASK; h++) {
+ 		if (h > s_h)
+ 			s_idx = 0;
+ 		for (n = tbl->phash_buckets[h], idx = 0; n; n = n->next) {
+@@ -3168,7 +3187,7 @@ static struct pneigh_entry *pneigh_get_first(struct seq_file *seq)
+ 	int bucket = state->bucket;
+ 
+ 	state->flags |= NEIGH_SEQ_IS_PNEIGH;
+-	for (bucket = 0; bucket <= PNEIGH_HASHMASK; bucket++) {
++	for (bucket = 0; bucket <= PNEIGH_HASH_MASK; bucket++) {
+ 		pn = tbl->phash_buckets[bucket];
+ 		while (pn && !net_eq(pneigh_net(pn), net))
+ 			pn = pn->next;
+@@ -3193,7 +3212,7 @@ static struct pneigh_entry *pneigh_get_next(struct seq_file *seq,
+ 	} while (pn && !net_eq(pneigh_net(pn), net));
+ 
+ 	while (!pn) {
+-		if (++state->bucket > PNEIGH_HASHMASK)
++		if (++state->bucket > PNEIGH_HASH_MASK)
+ 			break;
+ 		pn = tbl->phash_buckets[state->bucket];
+ 		while (pn && !net_eq(pneigh_net(pn), net))
+-- 
+1.8.3.1
+

@@ -1,0 +1,131 @@
+From ef3ea9baca99d8def010e1f081c1201fbf33b6cc Mon Sep 17 00:00:00 2001
+From: Serhey Popovych <serhe.popovych@gmail.com>
+Date: Fri, 30 May 2014 15:00:52 +0300
+Subject: [PATCH 01/11] dev: Increase device entries hash table size from 256
+ to 4096
+
+With large number of network devices and default device hash table size
+we have large chains in hash tables.
+
+For example with 4096 network interfaces we have average of 16 entries
+per chain, meaning that __dev_get_by_*() functions should traverse up
+to 15 entries in the chain list to find device.
+
+Increasing device entries hash table from 256 to 4096 would give much
+better results: 1 entry average per chain, that is 16 times smaller than
+with default value.
+
+Increasing table size also increases memory presure from
+256 * sizeof(struct hlist_head) == 2048 bytes to
+4096 * sizeof(struct hlist_head) == 32768 bytes (also 16 times).
+
+In the future this should be reimplemented with automatic hash growing.
+
+Signed-off-by: Serhey Popovych <serhe.popovych@gmail.com>
+---
+ include/net/net_namespace.h |  2 +-
+ net/core/dev.c              | 48 ++++++++++++++++++++++++++++++++-------------
+ 2 files changed, 35 insertions(+), 15 deletions(-)
+
+diff --git a/include/net/net_namespace.h b/include/net/net_namespace.h
+index eb0e773..831ca05 100644
+--- a/include/net/net_namespace.h
++++ b/include/net/net_namespace.h
+@@ -50,7 +50,7 @@
+ struct bpf_prog;
+ 
+ 
+-#define NETDEV_HASHBITS    8
++#define NETDEV_HASHBITS    12
+ #define NETDEV_HASHENTRIES (1 << NETDEV_HASHBITS)
+ 
+ struct net {
+diff --git a/net/core/dev.c b/net/core/dev.c
+index 34b5aab..3e393ca 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -11014,17 +11014,37 @@ netdev_features_t netdev_increment_features(netdev_features_t all,
+ }
+ EXPORT_SYMBOL(netdev_increment_features);
+ 
+-static struct hlist_head * __net_init netdev_create_hash(void)
++static struct hlist_head *netdev_hash_alloc(void)
+ {
+-	int i;
+-	struct hlist_head *hash;
++	struct hlist_head *h;
++	size_t size = NETDEV_HASHENTRIES * sizeof(*h);
++
++	/* Compiler shall optimize this */
++	if (size <= PAGE_SIZE)
++		h = kmalloc(size, GFP_KERNEL);
++	else
++		h = (struct hlist_head *)
++			__get_free_pages(GFP_KERNEL, get_order(size));
++
++	if (h) {
++		unsigned int i;
+ 
+-	hash = kmalloc_array(NETDEV_HASHENTRIES, sizeof(*hash), GFP_KERNEL);
+-	if (hash != NULL)
+ 		for (i = 0; i < NETDEV_HASHENTRIES; i++)
+-			INIT_HLIST_HEAD(&hash[i]);
++			INIT_HLIST_HEAD(&h[i]);
++	}
+ 
+-	return hash;
++	return h;
++}
++
++static void netdev_hash_free(struct hlist_head *h)
++{
++	size_t size = NETDEV_HASHENTRIES * sizeof(*h);
++
++	/* Compiler shall optimize this */
++	if (size <= PAGE_SIZE)
++		kfree(h);
++	else
++		free_pages((unsigned long)h, get_order(size));
+ }
+ 
+ /* Initialize per network namespace state */
+@@ -11036,12 +11056,12 @@ static int __net_init netdev_init(struct net *net)
+ 	if (net != &init_net)
+ 		INIT_LIST_HEAD(&net->dev_base_head);
+ 
+-	net->dev_name_head = netdev_create_hash();
+-	if (net->dev_name_head == NULL)
++	net->dev_name_head = netdev_hash_alloc();
++	if (!net->dev_name_head)
+ 		goto err_name;
+ 
+-	net->dev_index_head = netdev_create_hash();
+-	if (net->dev_index_head == NULL)
++	net->dev_index_head = netdev_hash_alloc();
++	if (!net->dev_index_head)
+ 		goto err_idx;
+ 
+ 	RAW_INIT_NOTIFIER_HEAD(&net->netdev_chain);
+@@ -11049,7 +11069,7 @@ static int __net_init netdev_init(struct net *net)
+ 	return 0;
+ 
+ err_idx:
+-	kfree(net->dev_name_head);
++	netdev_hash_free(net->dev_name_head);
+ err_name:
+ 	return -ENOMEM;
+ }
+@@ -11139,8 +11159,8 @@ void func(const struct net_device *dev, const char *fmt, ...)	\
+ 
+ static void __net_exit netdev_exit(struct net *net)
+ {
+-	kfree(net->dev_name_head);
+-	kfree(net->dev_index_head);
++	netdev_hash_free(net->dev_name_head);
++	netdev_hash_free(net->dev_index_head);
+ 	if (net != &init_net)
+ 		WARN_ON_ONCE(!list_empty(&net->dev_base_head));
+ }
+-- 
+1.8.3.1
+
