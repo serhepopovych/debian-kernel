@@ -1,0 +1,107 @@
+From 2bab7077de785bc4495ad6581297144016fdb28e Mon Sep 17 00:00:00 2001
+From: Serhey Popovych <serhe.popovych@gmail.com>
+Date: Wed, 1 Mar 2017 00:23:02 +0200
+Subject: [PATCH 03/11] dev: Reclaim network device indexes
+
+Currently network device indexes allocated in monotonically increasing
+order leaving gaps in case of existing network device being destroyed.
+
+To reuse ifindexes we introduce dev_free_index() helper which is used
+to reclaim released network device index when it is smaller than last
+allocated index in namespace.
+
+This also has positive side effect for equal distribution of network
+devices per buckets in index hash table. That positively affects
+performance of dev_get_by_index() family.
+
+Signed-off-by: Serhey Popovych <serhe.popovych@gmail.com>
+---
+ net/core/dev.c | 36 ++++++++++++++++++++++++++++++++----
+ 1 file changed, 32 insertions(+), 4 deletions(-)
+
+diff --git a/net/core/dev.c b/net/core/dev.c
+index 4d918d4..71fd23a 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -9499,6 +9499,24 @@ static int dev_new_index(struct net *net)
+ 	}
+ }
+ 
++/**
++ *	dev_free_index	-	free an ifindex
++ *	@dev: the network device whose index to free
++ *
++ *	Sets network namespace last allocated index to the value
++ *	preceeding to the ifindex we want to free.  The caller
++ *	must hold the rtnl semaphore or the dev_base_lock to be
++ *	sure it remains unique.
++ */
++static void dev_free_index(struct net_device *dev)
++{
++	struct net *net = dev_net(dev);
++	int ifindex = dev->ifindex;
++
++	if (--ifindex < net->ifindex)
++		net->ifindex = ifindex;
++}
++
+ /* Delayed registration/unregisteration */
+ static LIST_HEAD(net_todo_list);
+ DECLARE_WAIT_QUEUE_HEAD(netdev_unregistering_wq);
+@@ -9909,8 +9927,9 @@ void netif_tx_stop_all_queues(struct net_device *dev)
+ 
+ int register_netdevice(struct net_device *dev)
+ {
+-	int ret;
+ 	struct net *net = dev_net(dev);
++	int ifindex = 0;
++	int ret;
+ 
+ 	BUILD_BUG_ON(sizeof(netdev_features_t) * BITS_PER_BYTE <
+ 		     NETDEV_FEATURE_COUNT);
+@@ -9959,9 +9978,10 @@ int register_netdevice(struct net_device *dev)
+ 	}
+ 
+ 	ret = -EBUSY;
+-	if (dev->ifindex <= 0)
+-		dev->ifindex = dev_new_index(net);
+-	else if (__dev_get_by_index(net, dev->ifindex))
++	if (dev->ifindex <= 0) {
++		ifindex = dev_new_index(net);
++		dev->ifindex = ifindex;
++	} else if (__dev_get_by_index(net, dev->ifindex))
+ 		goto err_uninit;
+ 
+ 	/* Transfer changeable features to wanted_features and enable
+@@ -10066,6 +10086,8 @@ int register_netdevice(struct net_device *dev)
+ 		dev->netdev_ops->ndo_uninit(dev);
+ 	if (dev->priv_destructor)
+ 		dev->priv_destructor(dev);
++	if (ifindex)
++		dev_free_index(dev);
+ err_free_name:
+ 	netdev_name_node_free(dev->name_node);
+ 	goto out;
+@@ -10707,6 +10729,9 @@ void unregister_netdevice_many(struct list_head *head)
+ 		unlist_netdevice(dev);
+ 
+ 		dev->reg_state = NETREG_UNREGISTERING;
++
++		/* Reclaim a network device index */
++		dev_free_index(dev);
+ 	}
+ 	flush_all_backlogs();
+ 
+@@ -10883,6 +10908,9 @@ int dev_change_net_namespace(struct net_device *dev, struct net *net, const char
+ 	/* Move per-net netdevice notifiers that are following the netdevice */
+ 	move_netdevice_notifiers_dev_net(dev, net);
+ 
++	/* Free network device index */
++	dev_free_index(dev);
++
+ 	/* Actually switch the network namespace */
+ 	dev_net_set(dev, net);
+ 	dev->ifindex = new_ifindex;
+-- 
+1.8.3.1
+

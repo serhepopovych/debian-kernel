@@ -1,0 +1,156 @@
+From 169258a6b7a669b4746c5bbfc5be42ff3c5ddfc0 Mon Sep 17 00:00:00 2001
+From: Serhey Popovych <serhe.popovych@gmail.com>
+Date: Wed, 5 Nov 2014 14:24:55 +0200
+Subject: [PATCH 11/11] sch_htb: Packet class selection rules changes
+
+Run filter attached to the class regardless it is a leaf class or not
+(e.g. have subclasses) as filters might take some actions on the packet
+(e.g. redirect/mirror it to the IFB) and it is not vise to direct packet
+into leaf class with such kind of filters.
+
+Place packet to class regardless it is leaf or non-leaf if no filters
+attached to the class. It seems more reasonable to put packet in it's
+parent class instead of default class or direct HTB queue.
+
+If filter attached to the class returns same classid place packet to the
+class selected by filter.
+
+If filter returns invalid class and skb->priority changed (e.g. by the
+act_skbedit) try to reclassify packet according to the new skb->priority
+value.
+
+Do not classify packets to the direct HTB queue by skb->priority. First
+reason of all default class might be equal to the MAJOR:0, second reason
+is that packets from direct HTB queue are dequeued at the highest
+priority (even before any high priority class!) which seems unwanted for
+other classes.
+
+Queue packets to the direct HTB queue only we fail to find appropriate
+class for the packet (e.g. no default class, filter fails, etc.).
+
+Signed-off-by: Serhey Popovych <serhe.popovych@gmail.com>
+---
+ net/sched/sch_htb.c | 71 ++++++++++++++++++++++++++++++++++++-----------------
+ 1 file changed, 49 insertions(+), 22 deletions(-)
+
+diff --git a/net/sched/sch_htb.c b/net/sched/sch_htb.c
+index c3ba018..e32b9b8 100644
+--- a/net/sched/sch_htb.c
++++ b/net/sched/sch_htb.c
+@@ -199,10 +199,8 @@ static unsigned long htb_search(struct Qdisc *sch, u32 handle)
+  * should be passed directly thru. In all other cases leaf class is returned.
+  * We allow direct class selection by classid in priority. The we examine
+  * filters in qdisc and in inner nodes (if higher filter points to the inner
+- * node). If we end up with classid MAJOR:0 we enqueue the skb into special
+- * internal fifo (direct). These packets then go directly thru. If we still
+- * have no valid leaf we try to use MAJOR:default leaf. It still unsuccessful
+- * then finish and return direct queue.
++ * node). If we still have no valid leaf we try to use MAJOR:default leaf.
++ * It still unsuccessful then finish and return direct queue.
+  */
+ #define HTB_DIRECT ((struct htb_class *)-1L)
+ 
+@@ -210,29 +208,43 @@ static struct htb_class *htb_classify(struct sk_buff *skb, struct Qdisc *sch,
+ 				      int *qerr)
+ {
+ 	struct htb_sched *q = qdisc_priv(sch);
+-	struct htb_class *cl;
++	struct htb_class *cl, *cl_caller;
+ 	struct tcf_result res;
+-	struct tcf_proto *tcf;
+-	int result;
++	struct tcf_proto *tcf = NULL;
++	__u32 priority;
++
++reclassify:
++	priority = skb->priority;
+ 
+ 	/* allow to select class by setting skb->priority to valid classid;
+ 	 * note that nfmark can be used too by attaching filter fw with no
+ 	 * rules in it
+ 	 */
+-	if (skb->priority == sch->handle)
+-		return HTB_DIRECT;	/* X:0 (direct flow) selected */
+-	cl = htb_find(skb->priority, sch);
++
++	cl = htb_find(priority, sch);
+ 	if (cl) {
+-		if (cl->level == 0)
+-			return cl;
+-		/* Start with inner filter chain if a non-leaf class is selected */
+ 		tcf = rcu_dereference_bh(cl->filter_list);
++		/* If we hit class without filter; return it */
++		if (!tcf)
++			return cl;
+ 	} else {
++		/* Packet reclassify with new skb->priority failed */
++		if (tcf)
++			goto fail;
+ 		tcf = rcu_dereference_bh(q->filter_list);
+ 	}
+ 
++	cl_caller = cl;
++
+ 	*qerr = NET_XMIT_SUCCESS | __NET_XMIT_BYPASS;
+-	while (tcf && (result = tcf_classify(skb, tcf, &res, false)) >= 0) {
++	while (tcf) {
++		struct htb_class *cl_prev;
++		int result;
++
++		result = tcf_classify(skb, tcf, &res, false);
++		if (result < 0)
++			goto fail;
++
+ #ifdef CONFIG_NET_CLS_ACT
+ 		switch (result) {
+ 		case TC_ACT_QUEUED:
+@@ -244,23 +256,38 @@ static struct htb_class *htb_classify(struct sk_buff *skb, struct Qdisc *sch,
+ 			return NULL;
+ 		}
+ #endif
++		cl_prev = cl;
++
+ 		cl = (void *)res.class;
+ 		if (!cl) {
+-			if (res.classid == sch->handle)
+-				return HTB_DIRECT;	/* X:0 (direct flow) */
+ 			cl = htb_find(res.classid, sch);
+-			if (!cl)
+-				break;	/* filter selected invalid classid */
++			if (!cl) {
++				/* actions might have changed skb->priority */
++				if (skb->priority != priority)
++					goto reclassify;
++				goto fail;
++			}
+ 		}
+-		if (!cl->level)
+-			return cl;	/* we hit leaf; return it */
+ 
+-		/* we have got inner class; apply inner filter chain */
++		/* Filter selects class it is attached: return class */
++		if (cl == cl_prev)
++			return cl;
++
++		/* Filter selects our parent class where filter starts */
++		if (cl == cl_caller)
++			return cl_caller;
++
+ 		tcf = rcu_dereference_bh(cl->filter_list);
++		/* If we hit class without filter; return it */
++		if (!tcf)
++			return cl;
++
++		cl_caller = cl_prev;
+ 	}
++fail:
+ 	/* classification failed; try to use default class */
+ 	cl = htb_find(TC_H_MAKE(TC_H_MAJ(sch->handle), q->defcls), sch);
+-	if (!cl || cl->level)
++	if (!cl)
+ 		return HTB_DIRECT;	/* bad default .. this is safe bet */
+ 	return cl;
+ }
+-- 
+1.8.3.1
+

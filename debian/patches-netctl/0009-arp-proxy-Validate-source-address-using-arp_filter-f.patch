@@ -1,0 +1,110 @@
+From 9bc174a4bc3a4fce5b8ddb75d0e60127e4af22af Mon Sep 17 00:00:00 2001
+From: Serhey Popovych <serhe.popovych@gmail.com>
+Date: Sun, 4 Nov 2018 20:47:24 +0200
+Subject: [PATCH 09/11] arp: proxy: Validate source address using arp_filter
+ for proxy requests too
+
+For Proxy ARP (PVLAN) router could answer to ARP requests where source
+address of ARP is not reachable via same interface it comes in, as we
+perform no check on source. When ARP target is local system address, we
+could validate source using arp_filter sysctl knob, but it is not used
+for Proxy ARP.
+
+Expand arp_filter scope to Proxy ARP (PVLAN) cases to send ARP reply only
+when kernel would forward IP packets to source IP found in ARP request to
+the same interface ARP request received from.
+
+Following example used to demonstrate benefits of arp_filter for Proxy
+ARP (PVLAN) case"
+
+ lo: 192.0.2.254/24                                  lo: 192.0.2.254/24
+   noprefixroute                                       noprefixroute
+
+ ip route    +---+---+                     +---+---+ ip route
+  192.0.2.1  | gate1 |   nftables fib RPF  | gate2 |  192.0.2.2
+ dev vlan100 +---+---+     rp_filter=0     +---+---+ dev vlan100
+                  |        arp_filter=0         |
+          vlan100 +-----+-----------------+-----+
+                      .1|                 |.2
+                    +---+---+         +---+---+
+                    | host1 |         | host2 |
+                    +-------+         +-------+
+
+So in this case both gateways will ARP reply (although with different
+delay) to host1 for TIP 192.0.2.100, while only gate1 should reply
+because it has reverse route (would send IP packets to host1) normally.
+
+Otherwise, if gate2 wins IP packets would be dropped due to nftables fib
+RPF configured (or iptables rpfilter match rpfilter).
+
+This clearly shown with tcpdump(8) on vlan100 at gate2:
+
+tcpdump: verbose output suppressed, use -v or -vv for full protocol decode
+listening on vlan100, link-type EN10MB (Ethernet), capture size 262144 bytes
+11:55:18.800846 ARP, Request who-has 192.0.2.150 tell 192.0.2.1, length 28
+11:55:18.957807 ARP, Reply 192.0.2.150 is-at 06:66:7a:40:ae:ed, length 28
+11:55:22.633218 ARP, Request who-has 192.0.2.151 tell 192.0.2.1, length 28
+11:55:23.257810 ARP, Reply 192.0.2.151 is-at 06:66:7a:40:ae:ed, length 28
+11:55:23.257863 IP 192.0.2.1 > 192.0.2.151: ICMP echo request, id 13267, seq 1, length 64
+11:55:23.704766 ARP, Request who-has 192.0.2.152 tell 192.0.2.1, length 28
+11:55:24.463767 ARP, Reply 192.0.2.152 is-at 06:66:7a:40:ae:ed, length 28
+
+2: vlan100@if4: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 ...
+    link/ether 06:66:7a:40:ae:ed brd ff:ff:ff:ff:ff:ff link-netnsid 0
+
+Implementation for Proxy ARP (PVLAN) requires FLOWI_FLAG_ANYSRC in flowi4_flags
+since @tip is not local address. While there replace ip_route_output() with
+__ip_route_output_key(): there is no need to call xfrm_lookup() as done in
+ip_route_output_flow() that used by ip_route_output() since flowi4_proto is
+zero and thus xfrm lookups never happen anyway.
+
+Signed-off-by: Serhey Popovych <serhe.popovych@gmail.com>
+---
+ net/ipv4/arp.c | 24 +++++++++++++++++-------
+ 1 file changed, 17 insertions(+), 7 deletions(-)
+
+diff --git a/net/ipv4/arp.c b/net/ipv4/arp.c
+index 83a4799..6bb6993 100644
+--- a/net/ipv4/arp.c
++++ b/net/ipv4/arp.c
+@@ -435,7 +435,14 @@ static int arp_filter(__be32 sip, __be32 tip, struct net_device *dev)
+ 	/*unsigned long now; */
+ 	struct net *net = dev_net(dev);
+ 
+-	rt = ip_route_output(net, sip, tip, 0, l3mdev_master_ifindex_rcu(dev));
++	struct flowi4 fl4 = {
++		.flowi4_oif   = l3mdev_master_ifindex_rcu(dev),
++		.daddr        = sip,
++		.saddr        = tip,
++		.flowi4_flags = FLOWI_FLAG_ANYSRC,
++	};
++
++	rt = __ip_route_output_key(net, &fl4);
+ 	if (IS_ERR(rt))
+ 		return 1;
+ 	if (rt->dst.dev != dev) {
+@@ -835,12 +842,15 @@ static int arp_process(struct net *net, struct sock *sk, struct sk_buff *skb)
+ 				}
+ 			}
+ 			goto out_consume_skb;
+-		} else if (IN_DEV_FORWARD(in_dev)) {
+-			if (addr_type == RTN_UNICAST  &&
+-			    (arp_fwd_proxy(in_dev, dev, rt) ||
+-			     arp_fwd_pvlan(in_dev, dev, rt, sip, tip) ||
+-			     (rt->dst.dev != dev &&
+-			      pneigh_lookup(&arp_tbl, net, &tip, dev, 0)))) {
++		} else if (addr_type == RTN_UNICAST && IN_DEV_FORWARD(in_dev)) {
++			if (IN_DEV_ARPFILTER(in_dev)&&
++			    arp_filter(sip, tip, dev))
++				goto out_consume_skb;
++
++			if (arp_fwd_proxy(in_dev, dev, rt) ||
++			    arp_fwd_pvlan(in_dev, dev, rt, sip, tip) ||
++			    (rt->dst.dev != dev &&
++			     pneigh_lookup(&arp_tbl, net, &tip, dev, 0))) {
+ 				n = neigh_event_ns(&arp_tbl, sha, &sip, dev);
+ 				if (n)
+ 					neigh_release(n);
+-- 
+1.8.3.1
+

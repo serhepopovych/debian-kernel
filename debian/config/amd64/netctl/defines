@@ -1,0 +1,6 @@
+[base]
+flavours:
+ amd64
+
+[build]
+debug-info: false

@@ -1,0 +1,37 @@
+From 5ab814a294cb50b44bb8ddd6c8f84704b7810b28 Mon Sep 17 00:00:00 2001
+From: Serhey Popovych <serhe.popovych@gmail.com>
+Date: Tue, 13 Dec 2016 11:09:42 +0200
+Subject: [PATCH 10/11] arp: proxy: Respect statically configured entries
+
+Let user full control on how statically configured proxy neighbour
+entries are replied.
+
+Prior to this change replies are only sent when target is reachable
+via network device other than one request comes from effectively
+limiting static proxy configuration for classic proxy ARP.
+
+After this change there is no such restriction and proxy ARP private
+vlan static entries supported as well.
+
+Signed-off-by: Serhey Popovych <serhe.popovych@gmail.com>
+---
+ net/ipv4/arp.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/net/ipv4/arp.c b/net/ipv4/arp.c
+index 6bb6993..153caca 100644
+--- a/net/ipv4/arp.c
++++ b/net/ipv4/arp.c
+@@ -849,8 +849,7 @@ static int arp_process(struct net *net, struct sock *sk, struct sk_buff *skb)
+ 
+ 			if (arp_fwd_proxy(in_dev, dev, rt) ||
+ 			    arp_fwd_pvlan(in_dev, dev, rt, sip, tip) ||
+-			    (rt->dst.dev != dev &&
+-			     pneigh_lookup(&arp_tbl, net, &tip, dev, 0))) {
++			    pneigh_lookup(&arp_tbl, net, &tip, dev, 0)) {
+ 				n = neigh_event_ns(&arp_tbl, sha, &sip, dev);
+ 				if (n)
+ 					neigh_release(n);
+-- 
+1.8.3.1
+

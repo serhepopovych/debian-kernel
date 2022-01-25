@@ -1,0 +1,32 @@
+From 1c81d3c8fd4e594c5b57411e6c04a98c5900a4d2 Mon Sep 17 00:00:00 2001
+From: Serhey Popovych <serhe.popovych@gmail.com>
+Date: Wed, 15 Feb 2017 23:27:17 +0200
+Subject: [PATCH 02/11] dev: Prevent creating network devices with negative
+ ifindex
+
+Interface index is signed integer, we can pass ifm->ifi_index from
+userspace via netlink and create network device with negative ifindex
+value.
+
+Fixes: 9c7dafbfab15 ("net: Allow to create links with given ifindex")
+Signed-off-by: Serhey Popovych <serhe.popovych@gmail.com>
+---
+ net/core/dev.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/net/core/dev.c b/net/core/dev.c
+index 3e393ca..4d918d4 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -9959,7 +9959,7 @@ int register_netdevice(struct net_device *dev)
+ 	}
+ 
+ 	ret = -EBUSY;
+-	if (!dev->ifindex)
++	if (dev->ifindex <= 0)
+ 		dev->ifindex = dev_new_index(net);
+ 	else if (__dev_get_by_index(net, dev->ifindex))
+ 		goto err_uninit;
+-- 
+1.8.3.1
+

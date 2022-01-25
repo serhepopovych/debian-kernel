@@ -1,0 +1,7 @@
+[abi]
+ignore-changes: *
+
+[description]
+part-long-netctl: This kernel includes NETCTL patch set.
+part-short-netctl: NETCTL
+parts: netctl
