@@ -1,3 +1,125 @@
+linux (5.10.192-1) UNRELEASED; urgency=medium
+
+  * New upstream stable update:
+    https://www.kernel.org/pub/linux/kernel/v5.x/ChangeLog-5.10.192
+    - [arm64] mmc: sdhci-f-sdh30: Replace with sdhci_pltfm
+    - macsec: Fix traffic counters/statistics
+    - macsec: use DEV_STATS_INC()
+    - net/mlx5: Refactor init clock function
+    - net/mlx5: Move all internal timer metadata into a dedicated struct
+    - net/mlx5: Skip clock update work when device is in error state
+    - drm/radeon: Fix integer overflow in radeon_cs_parser_init
+    - ALSA: emu10k1: roll up loops in DSP setup code for Audigy
+    - [x86] ASoC: Intel: sof_sdw: add quirk for MTL RVP
+    - [x86] ASoC: Intel: sof_sdw: add quirk for LNL RVP
+    - [armhf] dts: imx6dl: prtrvt, prtvt7, prti6q, prtwd2: fix USB related
+      warnings
+    - [x86] ASoC: Intel: sof_sdw: Add support for Rex soundwire
+    - iopoll: Call cpu_relax() in busy loops
+    - quota: Properly disable quotas when add_dquot_ref() fails
+    - quota: fix warning in dqgrab()
+    - dma-remap: use kvmalloc_array/kvfree for larger dma memory remap
+    - drm/amdgpu: install stub fence into potential unused fence pointers
+    - HID: add quirk for 03f0:464a HP Elite Presenter Mouse
+    - RDMA/mlx5: Return the firmware result upon destroying QP/RQ
+    - ovl: check type and offset of struct vfsmount in ovl_entry
+    - udf: Fix uninitialized array access for some pathnames
+    - fs: jfs: Fix UBSAN: array-index-out-of-bounds in dbAllocDmapLev
+    - FS: JFS: Fix null-ptr-deref Read in txBegin
+    - FS: JFS: Check for read-only mounted filesystem in txBegin
+    - media: v4l2-mem2mem: add lock to protect parameter num_rdy
+    - usb: gadget: u_serial: Avoid spinlock recursion in __gs_console_push
+    - [arm64,armhf] usb: chipidea: imx: don't request QoS for imx8ulp
+    - [arm64,armhf] usb: chipidea: imx: add missing USB PHY DPDM wakeup setting
+    - gfs2: Fix possible data races in gfs2_show_options()
+    - pcmcia: rsrc_nonstatic: Fix memory leak in nonstatic_release_resource_db()
+    - Bluetooth: L2CAP: Fix use-after-free
+    - Bluetooth: btusb: Add MT7922 bluetooth ID for the Asus Ally
+    - drm/amdgpu: Fix potential fence use-after-free v2
+    - ALSA: hda/realtek: Add quirks for Unis H3C Desktop B760 & Q760
+    - ALSA: hda: fix a possible null-pointer dereference due to data race in
+      snd_hdac_regmap_sync()
+    - ring-buffer: Do not swap cpu_buffer during resize process
+    - bus: mhi: Add MHI PCI support for WWAN modems
+    - bus: mhi: Add MMIO region length to controller structure
+    - bus: mhi: Move host MHI code to "host" directory
+    - bus: mhi: host: Range check CHDBOFF and ERDBOFF
+    - [mips*] irqchip/mips-gic: Get rid of the reliance on irq_cpu_online()
+    - [mips*] irqchip/mips-gic: Use raw spinlock for gic_lock
+    - usb: gadget: udc: core: Introduce check_config to verify USB configuration
+    - usb: cdns3: allocate TX FIFO size according to composite EP number
+    - usb: cdns3: fix NCM gadget RX speed 20x slow than expection at iMX8QM
+    - [arm64] USB: dwc3: qcom: fix NULL-deref on suspend
+    - [arm*] mmc: bcm2835: fix deferred probing
+    - [arm64,armhf] mmc: sunxi: fix deferred probing
+    - mmc: core: add devm_mmc_alloc_host
+    - [arm64] mmc: meson-gx: use devm_mmc_alloc_host
+    - [arm64] mmc: meson-gx: fix deferred probing
+    - tracing/probes: Have process_fetch_insn() take a void * instead of pt_regs
+    - tracing/probes: Fix to update dynamic data counter if fetcharg uses it
+    - virtio-mmio: Use to_virtio_mmio_device() to simply code
+    - virtio-mmio: don't break lifecycle of vm_dev
+    - i2c: bcm-iproc: Fix bcm_iproc_i2c_isr deadlock issue
+    - fbdev: mmp: fix value check in mmphw_probe()
+    - [powerpc*] rtas_flash: allow user copy to flash block cache objects
+    - tty: n_gsm: fix the UAF caused by race condition in gsm_cleanup_mux
+    - tty: serial: fsl_lpuart: Clear the error flags by writing 1 for lpuart32
+      platforms
+    - btrfs: fix BUG_ON condition in btrfs_cancel_balance
+    - i2c: designware: Handle invalid SMBus block data response length value
+    - net: xfrm: Fix xfrm_address_filter OOB read
+    - net: af_key: fix sadb_x_filter validation
+    - net: xfrm: Amend XFRMA_SEC_CTX nla_policy structure
+    - xfrm: fix slab-use-after-free in decode_session6
+    - ip6_vti: fix slab-use-after-free in decode_session6
+    - ip_vti: fix potential slab-use-after-free in decode_session6
+    - xfrm: add NULL check in xfrm_update_ae_params (CVE-2023-3772)
+    - xfrm: add forgotten nla_policy for XFRMA_MTIMER_THRESH (CVE-2023-3773)
+    - selftests: mirror_gre_changes: Tighten up the TTL test match
+    - ipvs: fix racy memcpy in proc_do_sync_threshold
+    - netfilter: nft_dynset: disallow object maps
+    - net: phy: broadcom: stub c45 read/write for 54810
+    - team: Fix incorrect deletion of ETH_P_8021AD protocol vid from slaves
+    - i40e: fix misleading debug logs
+    - net: dsa: mv88e6xxx: Wait for EEPROM done before HW reset
+    - sock: Fix misuse of sk_under_memory_pressure()
+    - net: do not allow gso_size to be set to GSO_BY_FRAGS
+    - bus: ti-sysc: Flush posted write on enable before reset
+    - ALSA: hda/realtek - Remodified 3k pull low procedure
+    - serial: 8250: Fix oops for port->pm on uart_change_pm()
+    - ALSA: usb-audio: Add support for Mythware XA001AU capture and playback
+      interfaces.
+    - cifs: Release folio lock on fscache read hit.
+    - mmc: wbsd: fix double mmc_free_host() in wbsd_init()
+    - mmc: block: Fix in_flight[issue_type] value error
+    - netfilter: set default timeout to 3 secs for sctp shutdown send and recv
+      state
+    - af_unix: Fix null-ptr-deref in unix_stream_sendpage(). (CVE-2023-4622)
+    - virtio-net: set queues after driver_ok
+    - net: fix the RTO timer retransmitting skb every 1ms if linear option is
+      enabled
+    - [arm64] mmc: f-sdh30: fix order of function calls in sdhci_f_sdh30_remove
+    - [x86] cpu: Fix __x86_return_thunk symbol type
+    - [x86] cpu: Fix up srso_safe_ret() and __x86_return_thunk()
+    - [x86] alternative: Make custom return thunk unconditional
+    - objtool: Add frame-pointer-specific function ignore
+    - [x86] ibt: Add ANNOTATE_NOENDBR
+    - [x86] cpu: Clean up SRSO return thunk mess
+    - [x86] cpu: Rename original retbleed methods
+    - [x86] cpu: Rename srso_(.*)_alias to srso_alias_\1
+    - [x86] cpu: Cleanup the untrain mess
+    - [x86] srso: Explain the untraining sequences a bit more
+    - [x86] static_call: Fix __static_call_fixup()
+    - [x86] retpoline: Don't clobber RFLAGS during srso_safe_ret()
+    - [x86] CPU/AMD: Fix the DIV(0) initial fix attempt (CVE-2023-20588)
+    - [x86] srso: Disable the mitigation on unaffected configurations
+    - [x86] retpoline,kprobes: Fix position of thunk sections with
+      CONFIG_LTO_CLANG
+    - [x86] objtool/x86: Fixup frame-pointer vs rethunk
+    - [x86] srso: Correct the mitigation status when SMT is disabled
+
+ -- Salvatore Bonaccorso <carnil@debian.org>  Sun, 27 Aug 2023 20:42:18 +0200
+
 linux (5.10.191-1) bullseye-security; urgency=high
 
   * New upstream stable update:
