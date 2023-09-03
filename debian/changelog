@@ -1,4 +1,4 @@
-linux (5.10.193-1) UNRELEASED; urgency=medium
+linux (5.10.194-1) UNRELEASED; urgency=medium
 
   * New upstream stable update:
     https://www.kernel.org/pub/linux/kernel/v5.x/ChangeLog-5.10.192
@@ -199,6 +199,19 @@ linux (5.10.193-1) UNRELEASED; urgency=medium
     - mm: memory-failure: fix unexpected return value in soft_offline_page()
     - [x86] ASoC: Intel: sof_sdw: include rt711.h for RT711 JD mode
     - mm,hwpoison: fix printing of page flags
+    https://www.kernel.org/pub/linux/kernel/v5.x/ChangeLog-5.10.194
+    - module: Expose module_init_layout_section()
+    - [arm64] module-plts: inline linux/moduleloader.h
+    - [arm64] module: Use module_init_layout_section() to spot init sections
+    - [armel,armhf] module: Use module_init_layout_section() to spot init
+      sections
+    - mhi: pci_generic: Fix implicit conversion warning
+    - Revert "drm/amdgpu: install stub fence into potential unused fence
+      pointers"
+    - rcu: Prevent expedited GP from enabling tick on offline CPU
+    - rcu-tasks: Fix IPI failure handling in trc_wait_for_one_reader
+    - rcu-tasks: Wait for trc_read_check_handler() IPIs
+    - rcu-tasks: Add trc_inspect_reader() checks for exiting critical section
 
   [ Salvatore Bonaccorso ]
   * [rt] Refresh "cpuset: Convert callback_lock to raw_spinlock_t"
