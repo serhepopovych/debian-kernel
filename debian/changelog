@@ -202,6 +202,7 @@ linux (5.10.193-1) UNRELEASED; urgency=medium
 
   [ Salvatore Bonaccorso ]
   * [rt] Refresh "cpuset: Convert callback_lock to raw_spinlock_t"
+  * Bump ABI to 26
 
  -- Salvatore Bonaccorso <carnil@debian.org>  Sun, 27 Aug 2023 20:42:18 +0200
 
