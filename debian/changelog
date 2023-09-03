@@ -1,4 +1,4 @@
-linux (5.10.192-1) UNRELEASED; urgency=medium
+linux (5.10.193-1) UNRELEASED; urgency=medium
 
   * New upstream stable update:
     https://www.kernel.org/pub/linux/kernel/v5.x/ChangeLog-5.10.192
@@ -117,6 +117,88 @@ linux (5.10.192-1) UNRELEASED; urgency=medium
       CONFIG_LTO_CLANG
     - [x86] objtool/x86: Fixup frame-pointer vs rethunk
     - [x86] srso: Correct the mitigation status when SMT is disabled
+    https://www.kernel.org/pub/linux/kernel/v5.x/ChangeLog-5.10.193
+    - [x86] objtool/x86: Fix SRSO mess
+    - NFSv4: fix out path in __nfs4_get_acl_uncached
+    - xprtrdma: Remap Receive buffers after a reconnect
+    - PCI: acpiphp: Reassign resources on bridge if necessary
+    - dlm: improve plock logging if interrupted
+    - dlm: replace usage of found with dedicated list iterator variable
+    - fs: dlm: add pid to debug log
+    - fs: dlm: change plock interrupted message to debug again
+    - fs: dlm: use dlm_plock_info for do_unlock_close
+    - fs: dlm: fix mismatch of plock results from userspace
+    - [mips*] cpu-features: Enable octeon_cache by cpu_type
+    - [mips*] cpu-features: Use boot_cpu_type for CPU type based features
+    - fbdev: Improve performance of sys_imageblit()
+    - fbdev: Fix sys_imageblit() for arbitrary image widths
+    - fbdev: fix potential OOB read in fast_imageblit()
+    - dm integrity: increase RECALC_SECTORS to improve recalculate speed
+    - dm integrity: reduce vmalloc space footprint on 32-bit architectures
+    - ALSA: pcm: Fix potential data race at PCM memory allocation helpers
+    - drm/amd/display: do not wait for mpc idle if tg is disabled
+    - drm/amd/display: check TG is non-null before checking if enabled
+    - libceph, rbd: ignore addr->type while comparing in some cases
+    - rbd: make get_lock_owner_info() return a single locker or NULL
+    - rbd: retrieve and check lock owner twice before blocklisting
+    - rbd: prevent busy loop when requesting exclusive lock
+    - tracing: Fix cpu buffers unavailable due to 'record_disabled' missed
+    - tracing: Fix memleak due to race between current_tracer and trace
+    - sock: annotate data-races around prot->memory_pressure
+    - dccp: annotate data-races in dccp_poll()
+    - ipvlan: Fix a reference count leak warning in ipvlan_ns_exit()
+    - [arm64] net: bcmgenet: Fix return value check for fixed_phy_register()
+    - net: validate veth and vxcan peer ifindexes
+    - ice: fix receive buffer size miscalculation
+    - igb: Avoid starting unnecessary workqueues
+    - net/sched: fix a qdisc modification with ambiguous command request
+    - netfilter: nf_tables: fix out of memory error handling
+    - rtnetlink: return ENODEV when ifname does not exist and group is given
+    - rtnetlink: Reject negative ifindexes in RTM_NEWLINK
+    - net: remove bond_slave_has_mac_rcu()
+    - bonding: fix macvlan over alb bond support
+    - [powerpc*] ibmveth: Use dcbf rather than dcbfl
+    - NFSv4: Fix dropped lock for racing OPEN and delegation return
+    - clk: Fix slab-out-of-bounds error in devm_clk_release()
+    - mm: add a call to flush_cache_vmap() in vmap_pfn()
+    - NFS: Fix a use after free in nfs_direct_join_group()
+    - nfsd: Fix race to FREE_STATEID and cl_revoked
+    - selinux: set next pointer before attaching to list
+    - batman-adv: Trigger events for auto adjusted MTU
+    - batman-adv: Don't increase MTU when set by user
+    - batman-adv: Do not get eth header before batadv_check_management_packet
+    - batman-adv: Fix TT global entry leak when client roamed back
+    - batman-adv: Fix batadv_v_ogm_aggr_send memory leak
+    - batman-adv: Hold rtnl lock during MTU update via netlink
+    - lib/clz_ctz.c: Fix __clzdi2() and __ctzdi2() for 32-bit kernels
+    - [powerpc*] of: dynamic: Refactor action prints to not use "%pOF" inside
+      devtree_lock
+    - PCI: acpiphp: Use pci_assign_unassigned_bridge_resources() only for
+      non-root bus
+    - [x86] drm/vmwgfx: Fix shader stage validation
+    - drm/display/dp: Fix the DP DSC Receiver cap size
+    - [x86] fpu: Set X86_FEATURE_OSXSAVE feature after enabling OSXSAVE in CR4
+      (Closes: #1050622)
+    - torture: Fix hang during kthread shutdown phase
+    - tick: Detect and fix jiffies update stall
+    - timers/nohz: Switch to ONESHOT_STOPPED in the low-res handler when the
+      tick is stopped
+    - cgroup/cpuset: Rename functions dealing with DEADLINE accounting
+    - sched/cpuset: Bring back cpuset_mutex
+    - sched/cpuset: Keep track of SCHED_DEADLINE task in cpusets
+    - cgroup/cpuset: Iterate only if DEADLINE tasks are present
+    - sched/deadline: Create DL BW alloc, free & check overflow interface
+    - cgroup/cpuset: Free DL BW in case can_attach() fails
+    - [x86] drm/i915: Fix premature release of request's reusable memory
+    - ASoC: rt711: add two jack detection modes
+    - scsi: snic: Fix double free in snic_tgt_create()
+    - scsi: core: raid_class: Remove raid_component_add()
+    - mm,hwpoison: refactor get_any_page
+    - mm: fix page reference leak in soft_offline_page()
+    - mm: memory-failure: kill soft_offline_free_page()
+    - mm: memory-failure: fix unexpected return value in soft_offline_page()
+    - [x86] ASoC: Intel: sof_sdw: include rt711.h for RT711 JD mode
+    - mm,hwpoison: fix printing of page flags
 
  -- Salvatore Bonaccorso <carnil@debian.org>  Sun, 27 Aug 2023 20:42:18 +0200
 
