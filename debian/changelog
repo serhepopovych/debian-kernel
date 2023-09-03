@@ -200,6 +200,9 @@ linux (5.10.193-1) UNRELEASED; urgency=medium
     - [x86] ASoC: Intel: sof_sdw: include rt711.h for RT711 JD mode
     - mm,hwpoison: fix printing of page flags
 
+  [ Salvatore Bonaccorso ]
+  * [rt] Refresh "cpuset: Convert callback_lock to raw_spinlock_t"
+
  -- Salvatore Bonaccorso <carnil@debian.org>  Sun, 27 Aug 2023 20:42:18 +0200
 
 linux (5.10.191-1) bullseye-security; urgency=high
