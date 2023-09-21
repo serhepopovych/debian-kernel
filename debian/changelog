@@ -1,4 +1,4 @@
-linux (5.10.195-1) UNRELEASED; urgency=medium
+linux (5.10.196-1) UNRELEASED; urgency=medium
 
   * New upstream stable update:
     https://www.kernel.org/pub/linux/kernel/v5.x/ChangeLog-5.10.192
@@ -611,6 +611,8 @@ linux (5.10.195-1) UNRELEASED; urgency=medium
     - ixgbe: fix timestamp configuration code
     - kcm: Fix error handling for SOCK_DGRAM in kcm_sendmsg().
     - drm/amd/display: Fix a bug when searching for insert_above_mpcc
+    https://www.kernel.org/pub/linux/kernel/v5.x/ChangeLog-5.10.196
+    - Revert "configfs: fix a race in configfs_lookup()"
 
   [ Salvatore Bonaccorso ]
   * [rt] Refresh "cpuset: Convert callback_lock to raw_spinlock_t"
