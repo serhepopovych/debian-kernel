@@ -1,4 +1,4 @@
-linux (5.10.196-1) UNRELEASED; urgency=medium
+linux (5.10.197-1) UNRELEASED; urgency=medium
 
   * New upstream stable update:
     https://www.kernel.org/pub/linux/kernel/v5.x/ChangeLog-5.10.192
@@ -613,6 +613,80 @@ linux (5.10.196-1) UNRELEASED; urgency=medium
     - drm/amd/display: Fix a bug when searching for insert_above_mpcc
     https://www.kernel.org/pub/linux/kernel/v5.x/ChangeLog-5.10.196
     - Revert "configfs: fix a race in configfs_lookup()"
+    https://www.kernel.org/pub/linux/kernel/v5.x/ChangeLog-5.10.197
+    - autofs: fix memory leak of waitqueues in autofs_catatonic_mode
+    - btrfs: output extra debug info if we failed to find an inline backref
+    - ACPICA: Add AML_NO_OPERAND_RESOLVE flag to Timer
+    - kernel/fork: beware of __put_task_struct() calling context
+    - rcuscale: Move rcu_scale_writer() schedule_timeout_uninterruptible() to
+      _idle()
+    - [x86] ACPI: video: Add backlight=native DMI quirk for Lenovo Ideapad Z470
+    - [arm64] perf/smmuv3: Enable HiSilicon Erratum 162001900 quirk for HIP08/09
+    - [x86] ACPI: video: Add backlight=native DMI quirk for Apple iMac12,1 and
+      iMac12,2
+    - hw_breakpoint: fix single-stepping when using bpf_overflow_handler
+    - devlink: remove reload failed checks in params get/set callbacks
+    - crypto: lrw,xts - Replace strlcpy with strscpy
+    - wifi: ath9k: fix fortify warnings
+    - wifi: ath9k: fix printk specifier
+    - wifi: mwifiex: fix fortify warning
+    - wifi: wil6210: fix fortify warnings
+    - crypto: lib/mpi - avoid null pointer deref in mpi_cmp_ui()
+    - tpm_tis: Resend command to recover from data transfer errors
+    - [arm64,armhf] mmc: sdhci-esdhc-imx: improve ESDHC_FLAG_ERR010450
+    - alx: fix OOB-read compiler warning
+    - netfilter: ebtables: fix fortify warnings in size_entry_mwt()
+    - wifi: mac80211_hwsim: drop short frames
+    - ALSA: hda: intel-dsp-cfg: add LunarLake support
+    - [armhf] drm/exynos: fix a possible null-pointer dereference due to data
+      race in exynos_drm_crtc_atomic_disable()
+    - [armhf] bus: ti-sysc: Configure uart quirks for k3 SoC
+    - md: raid1: fix potential OOB in raid1_remove_disk()
+    - fs/jfs: prevent double-free in dbUnmount() after failed jfs_remount()
+    - jfs: fix invalid free of JFS_IP(ipimap)->i_imap in diUnmount
+    - [powerpc*] pseries: fix possible memory leak in ibmebus_bus_init()
+    - media: dvb-usb-v2: af9035: Fix null-ptr-deref in af9035_i2c_master_xfer
+    - media: dw2102: Fix null-ptr-deref in dw2102_i2c_transfer()
+    - media: af9005: Fix null-ptr-deref in af9005_i2c_xfer
+    - media: anysee: fix null-ptr-deref in anysee_master_xfer
+    - media: az6007: Fix null-ptr-deref in az6007_i2c_xfer()
+    - media: dvb-usb-v2: gl861: Fix null-ptr-deref in gl861_i2c_master_xfer
+    - media: tuners: qt1010: replace BUG_ON with a regular error
+    - media: pci: cx23885: replace BUG with error return
+    - usb: gadget: fsl_qe_udc: validate endpoint index for ch9 udc
+    - scsi: target: iscsi: Fix buffer overflow in lio_target_nacl_info_show()
+    - serial: cpm_uart: Avoid suspicious locking
+    - media: pci: ipu3-cio2: Initialise timing struct to avoid a compiler
+      warning
+    - kobject: Add sanity check for kset->kobj.ktype in kset_register()
+    - perf jevents: Make build dependency on test JSONs
+    - perf tools: Add an option to build without libbfd
+    - btrfs: move btrfs_pinned_by_swapfile prototype into volumes.h
+    - btrfs: add a helper to read the superblock metadata_uuid
+    - btrfs: compare the correct fsid/metadata_uuid in btrfs_validate_super
+    - scsi: qla2xxx: Fix NULL vs IS_ERR() bug for debugfs_create_dir()
+    - scsi: lpfc: Fix the NULL vs IS_ERR() bug for debugfs_create_file()
+    - [x86] boot/compressed: Reserve more memory for page tables
+    - md/raid1: fix error: ISO C90 forbids mixed declarations
+    - attr: block mode changes of symlinks
+    - ovl: fix incorrect fdput() on aio completion
+    - btrfs: fix lockdep splat and potential deadlock after failure running
+      delayed items
+    - btrfs: release path before inode lookup during the ino lookup ioctl
+    - drm/amdgpu: fix amdgpu_cs_p1_user_fence
+    - net/sched: Retire rsvp classifier (CVE-2023-42755)
+    - proc: fix a dentry lock race between release_task and lookup
+    - mm/filemap: fix infinite loop in generic_file_buffered_read()
+    - drm/amd/display: enable cursor degamma for DCN3+ DRM legacy gamma
+    - tracing: Have current_trace inc the trace array ref count
+    - tracing: Have option files inc the trace array ref count
+    - nfsd: fix change_info in NFSv4 RENAME replies
+    - tracefs: Add missing lockdown check to tracefs_create_dir()
+    - [armhf] i2c: aspeed: Reset the i2c controller when timeout occurs
+    - ata: libata: disallow dev-initiated LPM transitions to unsupported states
+    - scsi: megaraid_sas: Fix deadlock on firmware crashdump
+    - scsi: pm8001: Setup IRQs on resume
+    - ext4: fix rec_len verify error
 
   [ Salvatore Bonaccorso ]
   * [rt] Refresh "cpuset: Convert callback_lock to raw_spinlock_t"
