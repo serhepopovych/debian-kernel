@@ -692,6 +692,8 @@ linux (5.10.197-1) UNRELEASED; urgency=medium
   * [rt] Refresh "cpuset: Convert callback_lock to raw_spinlock_t"
   * Bump ABI to 26
   * [rt] Refresh "eventfd: Make signal recursion protection a task bit"
+  * Drop now unknown config options for IPv4 and IPv6 Resource Reservation
+    Protocol (RSVP, RSVP6)
 
  -- Salvatore Bonaccorso <carnil@debian.org>  Sun, 27 Aug 2023 20:42:18 +0200
 
