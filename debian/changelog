@@ -723,6 +723,7 @@ linux (5.10.197-1) UNRELEASED; urgency=medium
     (CVE-2023-42756)
   * netfilter: nf_tables: unregister flowtable hooks on netns exit
   * netfilter: nf_tables: double hook unregistration in netns path
+  * ipv4: fix null-deref in ipv4_link_failure
 
  -- Salvatore Bonaccorso <carnil@debian.org>  Sun, 27 Aug 2023 20:42:18 +0200
 
