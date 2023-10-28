@@ -187,6 +187,9 @@ linux (5.10.198-1) UNRELEASED; urgency=medium
     - netfilter: nftables: exthdr: fix 4-byte stack OOB write
     - xen/events: replace evtchn_rwlock with RCU (CVE-2023-34324)
 
+  [ Salvatore Bonaccorso ]
+  * Bump ABI to 27
+
  -- Salvatore Bonaccorso <carnil@debian.org>  Fri, 27 Oct 2023 06:13:10 +0200
 
 linux (5.10.197-1) bullseye; urgency=medium
