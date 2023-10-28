@@ -189,6 +189,9 @@ linux (5.10.198-1) UNRELEASED; urgency=medium
 
   [ Salvatore Bonaccorso ]
   * Bump ABI to 27
+  * [rt] Refresh "net: Properly annotate the try-lock for the seqlock"
+    Adapt to changes from upstream a8dd21118b0f ("seqlock: Prefix internal
+    seqcount_t-only macros with a "do_"") in 5.10.198.
 
  -- Salvatore Bonaccorso <carnil@debian.org>  Fri, 27 Oct 2023 06:13:10 +0200
 

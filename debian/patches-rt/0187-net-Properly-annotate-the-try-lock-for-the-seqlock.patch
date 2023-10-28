@@ -55,10 +55,10 @@ index 8ce663a9b4f4..72be68652bb8 100644
 +	if (spin_trylock(&qdisc->running.lock)) {
 +		seqcount_t *s = &qdisc->running.seqcount.seqcount;
 +		/*
-+		 * Variant of write_seqcount_t_begin() telling lockdep that a
++		 * Variant of do_write_seqcount_t_begin() telling lockdep that a
 +		 * trylock was attempted.
 +		 */
-+		raw_write_seqcount_t_begin(s);
++		do_raw_write_seqcount_begin(s);
 +		seqcount_acquire(&s->dep_map, 0, 1, _RET_IP_);
  		return true;
 +	}
