@@ -1,4 +1,4 @@
-linux (5.10.200-1) UNRELEASED; urgency=medium
+linux (5.10.201-1) UNRELEASED; urgency=medium
 
   * New upstream stable update:
     https://www.kernel.org/pub/linux/kernel/v5.x/ChangeLog-5.10.198
@@ -456,6 +456,169 @@ linux (5.10.200-1) UNRELEASED; urgency=medium
     - tty: 8250: Add support for Brainboxes UP cards
     - tty: 8250: Add support for Intashield IS-100
     - ALSA: hda: intel-dsp-config: Fix JSL Chromebook quirk detection
+    https://www.kernel.org/pub/linux/kernel/v5.x/ChangeLog-5.10.201
+    - [x86] iov_iter, x86: Be consistent about the __user tag on
+      copy_mc_to_user()
+    - sched/uclamp: Ignore (util == 0) optimization in feec() when p_util_max =
+      0
+    - vfs: fix readahead(2) on block devices
+    - [x86] srso: Fix SBPB enablement for (possible) future fixed HW
+    - futex: Don't include process MM in futex key on no-MMU
+    - [x86] boot: Fix incorrect startup_gdt_descr.size
+    - pstore/platform: Add check for kstrdup
+    - genirq/matrix: Exclude managed interrupts in irq_matrix_allocated()
+    - i40e: fix potential memory leaks in i40e_remove()
+    - udp: add missing WRITE_ONCE() around up->encap_rcv
+    - tcp: call tcp_try_undo_recovery when an RTOd TFO SYNACK is ACKed
+    - overflow: Implement size_t saturating arithmetic helpers
+    - gve: Use size_add() in call to struct_size()
+    - tipc: Use size_add() in calls to struct_size()
+    - wifi: rtw88: debug: Fix the NULL vs IS_ERR() bug for debugfs_create_file()
+    - tcp_metrics: add missing barriers on delete
+    - tcp_metrics: properly set tp->snd_ssthresh in tcp_init_metrics()
+    - tcp_metrics: do not create an entry from tcp_init_metrics()
+    - wifi: rtlwifi: fix EDCA limit set by BT coexistence
+    - can: dev: can_restart(): don't crash kernel if carrier is OK
+    - can: dev: can_restart(): fix race condition between controller restart and
+      netif_carrier_on()
+    - PM / devfreq: rockchip-dfi: Make pmu regmap mandatory
+    - thermal: core: prevent potential string overflow
+    - r8169: use tp_to_dev instead of open code
+    - r8169: fix rare issue with broken rx after link-down on RTL8125
+    - tcp: fix cookie_init_timestamp() overflows
+    - ACPI: sysfs: Fix create_pnp_modalias() and create_of_modalias()
+    - ipv6: avoid atomic fragment on GSO packets
+    - net: add DEV_STATS_READ() helper
+    - ipvlan: properly track tx_errors
+    - regmap: debugfs: Fix a erroneous check after snprintf()
+    - [arm64] clk: qcom: clk-rcg2: Fix clock rate overflow for high parent
+      frequencies
+    - [arm64] clk: qcom: mmcc-msm8998: Add hardware clockgating registers to
+      some clks
+    - [arm64] clk: qcom: mmcc-msm8998: Don't check halt bit on some branch clks
+    - [arm64] clk: qcom: mmcc-msm8998: Set bimc_smmu_gdsc always on
+    - [arm64] clk: qcom: mmcc-msm8998: Fix the SMMU GDSC
+    - [arm64] clk: qcom: gcc-sm8150: use ARRAY_SIZE instead of specifying
+      num_parents
+    - [arm64] clk: qcom: gcc-sm8150: Fix gcc_sdcc2_apps_clk_src
+    - [arm64] clk: imx: imx8mq: correct error handling path
+    - clk: asm9260: use parent index to link the reference clock
+    - clk: linux/clk-provider.h: fix kernel-doc warnings and typos
+    - [arm64] spi: nxp-fspi: use the correct ioremap function
+    - [armhf] clk: ti: Add ti_dt_clk_name() helper to use clock-output-names
+    - [armhf] clk: ti: Update pll and clockdomain clocks to use ti_dt_clk_name()
+    - [armhf] clk: ti: Update component clocks to use ti_dt_clk_name()
+    - [armhf] clk: ti: change ti_clk_register[_omap_hw]() API
+    - [armhf] clk: ti: fix double free in of_ti_divider_clk_setup()
+    - [x86] platform/x86: wmi: Fix probe failure when failing to register WMI
+      devices
+    - [x86] platform/x86: wmi: remove unnecessary initializations
+    - [x86] platform/x86: wmi: Fix opening of char device
+    - hwmon: (coretemp) Fix potentially truncated sysfs attribute name
+    - [arm64,armhf] drm/rockchip: vop: Fix reset of state in duplicate state
+      crtc funcs
+    - [arm64,armhf] drm/rockchip: vop: Fix call to crtc reset helper
+    - drm/radeon: possible buffer overflow
+    - [arm64] drm/rockchip: cdn-dp: Fix some error handling paths in
+      cdn_dp_probe()
+    - [arm64,armhf] drm/rockchip: Fix type promotion bug in
+      rockchip_gem_iommu_map()
+    - xen-pciback: Consider INTx disabled when MSI/MSI-X is enabled
+    - [arm64] dts: qcom: msm8916: Fix iommu local address range
+    - [arm64] dts: qcom: sdm845-mtp: fix WiFi configuration
+    - [i386] hwrng: geode - fix accessing registers
+    - libnvdimm/of_pmem: Use devm_kstrdup instead of kstrdup and check its
+      return value
+    - nd_btt: Make BTT lanes preemptible
+    - [arm64] crypto: caam/qi2 - fix Chacha20 + Poly1305 self test failure
+    - [arm64] crypto: caam/jr - fix Chacha20 + Poly1305 self test failure
+    - [x86] crypto: qat - mask device capabilities with soft straps
+    - [x86] crypto: qat - increase size of buffers
+    - hid: cp2112: Fix duplicate workqueue initialization
+    - [armel,armhf] 9321/1: memset: cast the constant byte to unsigned char
+    - ext4: move 'ix' sanity check to corrent position
+    - IB/mlx5: Fix rdma counter binding for RAW QP
+    - [arm64] RDMA/hns: Fix uninitialized ucmd in hns_roce_create_qp_common()
+    - [arm64] RDMA/hns: Fix signed-unsigned mixed comparisons
+    - scsi: ufs: core: Leave space for '\0' in utf8 desc string
+    - [amd64] RDMA/hfi1: Workaround truncation compilation error
+    - hid: cp2112: Fix IRQ shutdown stopping polling for all IRQs on chip
+    - Revert "HID: logitech-hidpp: add a module parameter to keep firmware
+      gestures"
+    - HID: logitech-hidpp: Remove HIDPP_QUIRK_NO_HIDINPUT quirk
+    - HID: logitech-hidpp: Don't restart IO, instead defer hid_connect() only
+    - HID: logitech-hidpp: Revert "Don't restart communication if not necessary"
+    - HID: logitech-hidpp: Move get_wireless_feature_index() check to
+      hidpp_connect_event()
+    - [x86] ASoC: Intel: Skylake: Fix mem leak when parsing UUIDs fails
+    - padata: Convert from atomic_t to refcount_t on parallel_data->refcnt
+    - padata: Fix refcnt handling in padata_free_shell()
+    - mfd: core: Un-constify mfd_cell.of_reg
+    - mfd: core: Ensure disabled devices are skipped without aborting
+    - mfd: dln2: Fix double put in dln2_probe
+    - leds: pwm: Don't disable the PWM when the LED should be off
+    - leds: trigger: ledtrig-cpu:: Fix 'output may be truncated' issue for 'cpu'
+    - tty: tty_jobctrl: fix pid memleak in disassociate_ctty()
+    - usb: dwc2: fix possible NULL pointer dereference caused by driver
+      concurrency
+    - dmaengine: ti: edma: handle irq_of_parse_and_map() errors
+    - misc: st_core: Do not call kfree_skb() under spin_lock_irqsave()
+    - USB: usbip: fix stub_dev hub disconnect
+    - dmaengine: pxa_dma: Remove an erroneous BUG_ON() in pxad_free_desc()
+    - f2fs: fix to initialize map.m_pblk in f2fs_precache_extents()
+    - modpost: fix tee MODULE_DEVICE_TABLE built on big-endian host
+    - [powerpc*] 40x: Remove stale PTE_ATOMIC_UPDATES macro
+    - [powerpc*] xive: Fix endian conversion size
+    - [powerpc*] imc-pmu: Use the correct spinlock initializer.
+    - [powerpc*] pseries: fix potential memory leak in init_cpu_associativity()
+    - xhci: Loosen RPM as default policy to cover for AMD xHC 1.1
+    - usb: host: xhci-plat: fix possible kernel oops while resuming
+    - perf machine: Avoid out of bounds LBR memory read
+    - perf hist: Add missing puts to hist__account_cycles
+    - i3c: Fix potential refcount leak in i3c_master_register_new_i3c_devs
+    - rtc: pcf85363: fix wrong mask/val parameters in regmap_update_bits call
+    - pcmcia: cs: fix possible hung task and memory leak pccardd()
+    - pcmcia: ds: fix refcount leak in pcmcia_device_add()
+    - pcmcia: ds: fix possible name leak in error path in pcmcia_device_add()
+    - media: i2c: max9286: Fix some redundant of_node_put() calls
+    - media: bttv: fix use after free error due to btv->timeout timer
+    - media: s3c-camif: Avoid inappropriate kfree()
+    - media: vidtv: psi: Add check for kstrdup
+    - media: vidtv: mux: Add check and kfree for kstrdup
+    - media: cedrus: Fix clock/reset sequence
+    - media: dvb-usb-v2: af9035: fix missing unlock
+    - regmap: prevent noinc writes from clobbering cache
+    - pwm: sti: Avoid conditional gotos
+    - pwm: sti: Reduce number of allocations and drop usage of chip_data
+    - pwm: brcmstb: Utilize appropriate clock APIs in suspend/resume
+    - Input: synaptics-rmi4 - fix use after free in rmi_unregister_function()
+    - llc: verify mac len before reading mac header
+    - hsr: Prevent use after free in prp_create_tagged_frame()
+    - tipc: Change nla_policy for bearer-related names to NLA_NUL_STRING
+    - inet: shrink struct flowi_common
+    - dccp: Call security_inet_conn_request() after setting IPv4 addresses.
+    - dccp/tcp: Call security_inet_conn_request() after setting IPv6 addresses.
+    - net: r8169: Disable multicast filter for RTL8168H and RTL8107E
+    - Fix termination state for idr_for_each_entry_ul()
+    - net: stmmac: xgmac: Enable support for multiple Flexible PPS outputs
+    - net/smc: fix dangling sock under state SMC_APPFINCLOSEWAIT
+    - net/smc: allow cdc msg send rather than drop it with NULL sndbuf_desc
+    - net/smc: put sk reference if close work was canceled
+    - tg3: power down device only on SYSTEM_POWER_OFF
+    - r8169: respect userspace disabling IFF_MULTICAST
+    - netfilter: xt_recent: fix (increase) ipv6 literal buffer length
+    - netfilter: nft_redir: use `struct nf_nat_range2` throughout and
+      deduplicate eval call-backs
+    - netfilter: nat: fix ipv6 nat redirect with mapped and scoped addresses
+    - [x86] Share definition of __is_canonical_address()
+    - [x86] sev-es: Allow copy_from_kernel_nofault() in earlier boot
+    - drm/syncobj: fix DRM_SYNCOBJ_WAIT_FLAGS_WAIT_AVAILABLE
+    - fbdev: imsttfb: Fix error path of imsttfb_probe()
+    - fbdev: imsttfb: fix a resource leak in probe
+    - fbdev: fsl-diu-fb: mark wr_reg_wa() static
+    - tracing/kprobes: Fix the order of argument descriptions
+    - Revert "mmc: core: Capture correct oemid-bits for eMMC cards"
+    - btrfs: use u64 for buffer sizes in the tree search ioctls
 
   [ Salvatore Bonaccorso ]
   * Bump ABI to 27
