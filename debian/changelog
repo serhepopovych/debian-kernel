@@ -1,4 +1,4 @@
-linux (5.10.202-1) UNRELEASED; urgency=medium
+linux (5.10.203-1) UNRELEASED; urgency=medium
 
   * New upstream stable update:
     https://www.kernel.org/pub/linux/kernel/v5.x/ChangeLog-5.10.198
@@ -784,6 +784,123 @@ linux (5.10.202-1) UNRELEASED; urgency=medium
     - netfilter: nftables: update table flags from the commit phase
     - netfilter: nf_tables: fix table flag updates
     - netfilter: nf_tables: disable toggling dormant table state more than once
+    https://www.kernel.org/pub/linux/kernel/v5.x/ChangeLog-5.10.203
+    - RDMA/irdma: Prevent zero-length STAG registration (CVE-2023-25775)
+    - afs: Fix afs_server_list to be cleaned up with RCU
+    - afs: Make error on cell lookup failure consistent with OpenAFS
+    - [arm64,armhf] drm/panel: simple: Fix Innolux G101ICE-L01 bus flags
+    - [arm64,armhf] drm/panel: simple: Fix Innolux G101ICE-L01 timings
+    - wireguard: use DEV_STATS_INC()
+    - ata: pata_isapnp: Add missing error check for devm_ioport_map()
+    - [arm64,armhf] drm/rockchip: vop: Fix color for RGB888/BGR888 format on VOP
+      full
+    - HID: core: store the unique system identifier in hid_device
+    - HID: fix HID device resource race between HID core and debugging support
+    - ipv4: Correct/silence an endian warning in __ip_do_redirect
+    - net: usb: ax88179_178a: fix failed operations during ax88179_reset
+    - net/smc: avoid data corruption caused by decline
+    - [armhf] xen: fix xen_vcpu_info allocation alignment
+    - [amd64,arm64] amd-xgbe: handle corner-case during sfp hotplug
+    - [amd64,arm64] amd-xgbe: handle the corner-case during tx completion
+    - [amd64,arm64] amd-xgbe: propagate the correct speed and duplex status
+    - afs: Return ENOENT if no cell DNS record can be found
+    - afs: Fix file locking on R/O volumes to operate in local mode
+    - nvmet: remove unnecessary ctrl parameter
+    - nvmet: nul-terminate the NQNs passed in the connect command
+      (CVE-2023-6121)
+    - [arm64] USB: dwc3: qcom: fix resource leaks on probe deferral
+    - [arm64] USB: dwc3: qcom: fix ACPI platform device leak
+    - lockdep: Fix block chain corruption
+    - ext4: add a new helper to check if es must be kept
+    - ext4: factor out __es_alloc_extent() and __es_free_extent()
+    - ext4: use pre-allocated es in __es_insert_extent()
+    - ext4: use pre-allocated es in __es_remove_extent()
+    - ext4: using nofail preallocation in ext4_es_remove_extent()
+    - ext4: using nofail preallocation in ext4_es_insert_delayed_block()
+    - ext4: using nofail preallocation in ext4_es_insert_extent()
+    - ext4: fix slab-use-after-free in ext4_es_insert_extent()
+    - ext4: make sure allocate pending entry not fail
+    - nfsd: lock_rename() needs both directories to live on the same fs
+    - [arm*] ASoC: simple-card: fixup asoc_simple_probe() error handling
+    - ACPI: resource: Skip IRQ override on ASUS ExpertBook B1402CVA
+    - swiotlb-xen: provide the "max_mapping_size" method
+    - bcache: replace a mistaken IS_ERR() by IS_ERR_OR_NULL() in
+      btree_gc_coalesce()
+    - bcache: fixup multi-threaded bch_sectors_dirty_init() wake-up race
+    - [s390x] dasd: protect device queue against concurrent access
+    - USB: serial: option: add Luat Air72*U series products
+    - [x86] hv_netvsc: Fix race of register_netdevice_notifier and VF register
+    - [x86] hv_netvsc: Mark VF as slave before exposing it to user-mode
+    - dm-delay: fix a race between delay_presuspend and delay_bio
+    - bcache: check return value from btree_node_alloc_replacement()
+    - bcache: prevent potential division by zero error
+    - bcache: fixup init dirty data errors
+    - bcache: fixup lock c->root error
+    - USB: serial: option: add Fibocom L7xx modules
+    - USB: serial: option: fix FM101R-GL defines
+    - USB: serial: option: don't claim interface 4 for ZTE MF290
+    - [arm*] USB: dwc2: write HCINT with INTMASK applied
+    - [arm64,armhf] usb: dwc3: Fix default mode initialization
+    - [arm64,armhf] usb: dwc3: set the dma max_seg_size
+    - [arm64,armhf] USB: dwc3: qcom: fix wakeup after probe deferral
+    - io_uring: fix off-by one bvec index
+    - pinctrl: avoid reload of p state in list iteration
+    - firewire: core: fix possible memory leak in create_units()
+    - mmc: block: Do not lose cache flush during CQE error recovery
+    - ALSA: hda: Disable power-save on KONTRON SinglePC
+    - ALSA: hda/realtek: Headset Mic VREF to 100%
+    - ALSA: hda/realtek: Add supported ALC257 for ChromeOS
+    - dm-verity: align struct dm_verity_fec_io properly
+    - dm verity: don't perform FEC for failed readahead IO
+    - bcache: revert replacing IS_ERR_OR_NULL with IS_ERR
+    - [amd64] iommu/vt-d: Add MTL to quirk list to skip TE disabling
+    - [powerpc*] Don't clobber f0/vs0 during fp|altivec register save
+      (Closes: #1032104)
+    - btrfs: add dmesg output for first mount and last unmount of a filesystem
+    - btrfs: ref-verify: fix memory leaks in btrfs_ref_tree_mod()
+    - btrfs: fix off-by-one when checking chunk map includes logical address
+    - btrfs: send: ensure send_fd is writable
+    - btrfs: make error messages more clear when getting a chunk map
+    - Input: xpad - add HyperX Clutch Gladiate Support
+    - [x86] hv_netvsc: fix race of netvsc and VF register_netdevice
+    - USB: core: Change configuration warnings to notices
+    - usb: config: fix iteration issue in 'usb_get_bos_descriptor()'
+    - ipv4: igmp: fix refcnt uaf issue when receiving igmp query packet
+      (CVE-2023-6932)
+    - [arm64] dpaa2-eth: increase the needed headroom to account for alignment
+    - net: stmmac: xgmac: Disable FPE MMC interrupts
+    - Revert "workqueue: remove unused cancel_work()"
+    - r8169: prevent potential deadlock in rtl8169_close
+    - smb3: fix touch -h of symlink
+    - [x86] ASoC: Intel: Move soc_intel_is_foo() helpers to a generic header
+    - [x86] ASoC: SOF: sof-pci-dev: use community key on all Up boards
+    - [x86] ASoC: SOF: sof-pci-dev: add parameter to override topology filename
+    - [x86] ASoC: SOF: sof-pci-dev: don't use the community key on APL
+      Chromebooks
+    - [x86] ASoC: SOF: sof-pci-dev: Fix community key quirk detection
+    - [s390x] mm: fix phys vs virt confusion in mark_kernel_pXd() functions
+      family
+    - [s390x] cmma: fix detection of DAT pages
+    - ima: annotate iint mutex to avoid lockdep false positive warnings
+    - driver core: Move the "removable" attribute from USB to core
+    - drm/amdgpu: don't use ATRM for external devices
+    - fs: add ctime accessors infrastructure
+    - smb3: fix caching of ctime on setxattr
+    - scsi: core: Introduce the scsi_cmd_to_rq() function
+    - scsi: qla2xxx: Use scsi_cmd_to_rq() instead of scsi_cmnd.request
+    - scsi: qla2xxx: Fix system crash due to bad pointer access
+    - [armhf] cpufreq: imx6q: don't warn for disabling a non-existing frequency
+    - [armhf] cpufreq: imx6q: Don't disable 792 Mhz OPP unnecessarily
+    - mmc: cqhci: Increase recovery halt timeout
+    - mmc: cqhci: Warn of halt or task clear failure
+    - mmc: cqhci: Fix task clearing in CQE error recovery
+    - mmc: core: convert comma to semicolon
+    - mmc: block: Retry commands in CQE error recovery
+    - mmc: core: add helpers mmc_regulator_enable/disable_vqmmc
+    - r8169: disable ASPM in case of tx timeout
+    - r8169: fix deadlock on RTL8125 in jumbo mtu mode
+    - driver core: Release all resources during unbind before updating device
+      links
 
   [ Salvatore Bonaccorso ]
   * Bump ABI to 27
