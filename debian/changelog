@@ -1,4 +1,4 @@
-linux (5.10.203-1) UNRELEASED; urgency=medium
+linux (5.10.204-1) UNRELEASED; urgency=medium
 
   * New upstream stable update:
     https://www.kernel.org/pub/linux/kernel/v5.x/ChangeLog-5.10.198
@@ -901,6 +901,94 @@ linux (5.10.203-1) UNRELEASED; urgency=medium
     - r8169: fix deadlock on RTL8125 in jumbo mtu mode
     - driver core: Release all resources during unbind before updating device
       links
+    https://www.kernel.org/pub/linux/kernel/v5.x/ChangeLog-5.10.204
+    - hrtimers: Push pending hrtimers away from outgoing CPU earlier
+    - i2c: designware: Fix corrupted memory seen in the ISR
+    - netfilter: ipset: fix race condition between swap/destroy and kernel side
+      add/del/test
+    - tg3: Move the [rt]x_dropped counters to tg3_napi
+    - tg3: Increment tx_dropped in tg3_tso_bug()
+    - kconfig: fix memory leak from range properties
+    - drm/amdgpu: correct chunk_ptr to a pointer to chunk.
+    - [x86] platform/x86: asus-wmi: Add support for SW_TABLET_MODE on UX360
+    - [x86] platform/x86: asus-nb-wmi: Allow configuring SW_TABLET_MODE method
+      with a module option
+    - [x86] platform/x86: asus-nb-wmi: Add tablet_mode_sw=lid-flip quirk for the
+      TP200s
+    - [x86] asus-wmi: Add dgpu disable method
+    - [x86] platform/x86: asus-wmi: Adjust tablet/lidflip handling to use enum
+    - [x86] platform/x86: asus-wmi: Add support for ROG X13 tablet mode
+    - [x86] platform/x86: asus-wmi: Simplify tablet-mode-switch probing
+    - [x86] platform/x86: asus-wmi: Simplify tablet-mode-switch handling
+    - [x86] platform/x86: asus-wmi: Move i8042 filter install to shared asus-wmi
+      code
+    - of: base: Fix some formatting issues and provide missing descriptions
+    - of: Fix kerneldoc output formatting
+    - of: Add missing 'Return' section in kerneldoc comments
+    - of: dynamic: Fix of_reconfig_get_state_change() return value documentation
+    - ipv6: fix potential NULL deref in fib6_add()
+    - hv_netvsc: rndis_filter needs to select NLS
+    - net: arcnet: com20020 fix error handling
+    - arcnet: restoring support for multiple Sohard Arcnet cards
+    - i40e: Fix unexpected MFS warning message
+    - net: bnxt: fix a potential use-after-free in bnxt_init_tc
+    - ipv4: ip_gre: Avoid skb_pull() failure in ipgre_xmit()
+    - [arm64] net: hns: fix fake link up on xge port
+    - netfilter: xt_owner: Fix for unsafe access of sk->sk_socket
+    - tcp: do not accept ACK of bytes we never sent
+    - bpf: sockmap, updating the sg structure should also update curr
+    - [arm64] tee: optee: Fix supplicant based device enumeration
+    - RDMA/bnxt_re: Correct module description string
+    - [x86] hwmon: (acpi_power_meter) Fix 4.29 MW bug
+    - tracing: Fix a warning when allocating buffered events fails
+    - scsi: be2iscsi: Fix a memleak in beiscsi_init_wrb_handle()
+    - [armhf] imx: Check return value of devm_kasprintf in imx_mmdc_perf_init
+    - ALSA: pcm: fix out-of-bounds in snd_pcm_state_names
+    - ALSA: hda/realtek: Enable headset on Lenovo M90 Gen5
+    - nilfs2: fix missing error check for sb_set_blocksize call
+    - nilfs2: prevent WARNING in nilfs_sufile_set_segment_usage()
+    - checkstack: fix printed address
+    - tracing: Always update snapshot buffer size
+    - tracing: Disable snapshot buffer when stopping instance tracers
+    - tracing: Fix incomplete locking when disabling buffered events
+    - tracing: Fix a possible race when disabling buffered events
+    - packet: Move reference count in packet_sock to atomic_long_t
+    - [x86] misc: mei: client.c: return negative error code in mei_cl_write
+    - [x86] misc: mei: client.c: fix problem of return '-EOVERFLOW' in
+      mei_cl_write
+    - ring-buffer: Force absolute timestamp on discard of event
+    - tracing: Set actual size after ring buffer resize
+    - tracing: Stop current tracer when resizing buffer
+    - perf/core: Add a new read format to get a number of lost samples
+    - perf: Fix perf_event_validate_size() (CVE-2023-6931)
+    - gpiolib: sysfs: Fix error handling on failed export
+    - drm/amdgpu: correct the amdgpu runtime dereference usage count
+    - usb: gadget: f_hid: fix report descriptor allocation
+    - parport: Add support for Brainboxes IX/UC/PX parallel cards
+    - Revert "xhci: Loosen RPM as default policy to cover for AMD xHC 1.1"
+    - usb: typec: class: fix typec_altmode_put_partner to put plugs
+    - [arm*] PL011: Fix DMA support
+    - [x86] CPU/AMD: Check vendor in the AMD microcode callback
+    - [s390x] KVM: s390/mm: Properly reset no-dat
+    - [mips*] Loongson64: Reserve vgabios memory on boot
+    - [mips*] Loongson64: Enable DMA noncoherent support
+    - io_uring/af_unix: disable sending io_uring over sockets (CVE-2023-6531)
+    - netlink: don't call ->netlink_bind with table lock held
+    - genetlink: add CAP_NET_ADMIN test for multicast bind
+    - psample: Require 'CAP_NET_ADMIN' when joining "packets" group
+    - drop_monitor: Require 'CAP_SYS_ADMIN' when joining "events" group
+    - netfilter: nft_set_pipapo: skip inactive elements during set walk
+      (CVE-2023-6817)
+    - [x86] platform/x86: asus-wmi: Fix kbd_dock_devid tablet-switch reporting
+    - [x86] platform/x86: asus-wmi: Document the dgpu_disable sysfs attribute
+    - mmc: block: Be sure to wait while busy in CQE error recovery
+    - Revert "btrfs: add dmesg output for first mount and last unmount of a
+      filesystem"
+    - cifs: Fix non-availability of dedup breaking generic/304
+    - smb: client: fix potential NULL deref in parse_dfs_referrals()
+    - devcoredump : Serialize devcd_del work
+    - devcoredump: Send uevent once devcd is ready
+    - r8169: fix rtl8125b PAUSE frames blasting when suspended
 
   [ Salvatore Bonaccorso ]
   * Bump ABI to 27
