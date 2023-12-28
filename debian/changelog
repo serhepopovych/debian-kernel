@@ -1061,6 +1061,10 @@ linux (5.10.205-1) UNRELEASED; urgency=medium
   * Do not enable DEBUG_PREEMPT (not enabled by default since 5.10.199)
   * [rt] Update to 5.10.201-rt98
   * [rt] Update to 5.10.204-rt100
+  * [arm64] drivers/vfio: Don't enable VFIO_NOIOMMU.
+    This is a breach of the integrity lockdown requirement of secure boot
+    and thus cannot be enabled.
+    Thanks to Bastian Blank and Ben Hutchings
 
  -- Salvatore Bonaccorso <carnil@debian.org>  Fri, 27 Oct 2023 06:13:10 +0200
 
