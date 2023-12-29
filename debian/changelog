@@ -1065,6 +1065,7 @@ linux (5.10.205-1) UNRELEASED; urgency=medium
     This is a breach of the integrity lockdown requirement of secure boot
     and thus cannot be enabled.
     Thanks to Bastian Blank and Ben Hutchings
+  * netfilter: nf_tables: skip set commit for deleted/destroyed sets
 
  -- Salvatore Bonaccorso <carnil@debian.org>  Fri, 27 Oct 2023 06:13:10 +0200
 
