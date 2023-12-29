@@ -1060,6 +1060,7 @@ linux (5.10.205-1) UNRELEASED; urgency=medium
   * Refresh "arm64: compat: Implement misalignment fixups for multiword loads"
   * Do not enable DEBUG_PREEMPT (not enabled by default since 5.10.199)
   * [rt] Update to 5.10.201-rt98
+  * [rt] Update to 5.10.204-rt100
 
  -- Salvatore Bonaccorso <carnil@debian.org>  Fri, 27 Oct 2023 06:13:10 +0200
 

@@ -1,11 +1,11 @@
-From 0b5b47cdc7370068412fafd0e0e4f7e2b8b33615 Mon Sep 17 00:00:00 2001
+From 38a85604759ae488654bab5c1cd9f23cd0d77ce0 Mon Sep 17 00:00:00 2001
 From: "Luis Claudio R. Goncalves" <lgoncalv@redhat.com>
 Date: Thu, 12 May 2022 23:25:33 -0300
-Subject: [PATCH 313/322] rt: remove extra parameter from __trace_stack()
+Subject: [PATCH 313/323] rt: remove extra parameter from __trace_stack()
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Origin: https://www.kernel.org/pub/linux/kernel/projects/rt/5.10/older/patches-5.10.201-rt98.tar.xz
+Origin: https://www.kernel.org/pub/linux/kernel/projects/rt/5.10/older/patches-5.10.204-rt100.tar.xz
 
 Fix the build error below while keeping the current PREEMPT_RT code:
 
@@ -24,7 +24,7 @@ Signed-off-by: Luis Claudio R. Goncalves <lgoncalv@redhat.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/kernel/trace/trace_events_trigger.c b/kernel/trace/trace_events_trigger.c
-index 4bc90965abb25..75fef9fcfd0fb 100644
+index 4bc90965abb2..75fef9fcfd0f 100644
 --- a/kernel/trace/trace_events_trigger.c
 +++ b/kernel/trace/trace_events_trigger.c
 @@ -1224,7 +1224,7 @@ stacktrace_trigger(struct event_trigger_data *data, void *rec,
@@ -37,5 +37,5 @@ index 4bc90965abb25..75fef9fcfd0fb 100644
  		trace_dump_stack(STACK_SKIP);
  }
 -- 
-2.42.0
+2.43.0
 

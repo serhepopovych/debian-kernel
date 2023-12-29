@@ -1,8 +1,8 @@
-From de692b588c55e22f4112b1d628c68f806c246f28 Mon Sep 17 00:00:00 2001
+From f7c4220e56be1d8fc2bc339984fb5919ee02cf4f Mon Sep 17 00:00:00 2001
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Thu, 16 Dec 2010 14:25:18 +0100
-Subject: [PATCH 244/322] x86: stackprotector: Avoid random pool on rt
-Origin: https://www.kernel.org/pub/linux/kernel/projects/rt/5.10/older/patches-5.10.201-rt98.tar.xz
+Subject: [PATCH 244/323] x86: stackprotector: Avoid random pool on rt
+Origin: https://www.kernel.org/pub/linux/kernel/projects/rt/5.10/older/patches-5.10.204-rt100.tar.xz
 
 CPU bringup calls into the random pool to initialize the stack
 canary. During boot that works nicely even on RT as the might sleep
@@ -19,7 +19,7 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  1 file changed, 7 insertions(+), 1 deletion(-)
 
 diff --git a/arch/x86/include/asm/stackprotector.h b/arch/x86/include/asm/stackprotector.h
-index 7fb482f0f25b0..3df0a95c9e134 100644
+index 7fb482f0f25b..3df0a95c9e13 100644
 --- a/arch/x86/include/asm/stackprotector.h
 +++ b/arch/x86/include/asm/stackprotector.h
 @@ -65,7 +65,7 @@
@@ -47,5 +47,5 @@ index 7fb482f0f25b0..3df0a95c9e134 100644
  	canary += tsc + (tsc << 32UL);
  	canary &= CANARY_MASK;
 -- 
-2.42.0
+2.43.0
 
