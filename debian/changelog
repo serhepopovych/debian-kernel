@@ -1,4 +1,4 @@
-linux (5.10.205-1) UNRELEASED; urgency=medium
+linux (5.10.205-1) bullseye-security; urgency=high
 
   * New upstream stable update:
     https://www.kernel.org/pub/linux/kernel/v5.x/ChangeLog-5.10.198
@@ -1067,7 +1067,7 @@ linux (5.10.205-1) UNRELEASED; urgency=medium
     Thanks to Bastian Blank and Ben Hutchings
   * netfilter: nf_tables: skip set commit for deleted/destroyed sets
 
- -- Salvatore Bonaccorso <carnil@debian.org>  Fri, 27 Oct 2023 06:13:10 +0200
+ -- Salvatore Bonaccorso <carnil@debian.org>  Sat, 30 Dec 2023 10:41:34 +0100
 
 linux (5.10.197-1) bullseye; urgency=medium
 
