@@ -73,6 +73,9 @@ linux (5.10.206-1) UNRELEASED; urgency=medium
     - Bluetooth: SMP: Fix crash when receiving new connection when debug is
       enabled
 
+  [ Salvatore Bonaccorso ]
+  * Bump ABI to 28
+
  -- Salvatore Bonaccorso <carnil@debian.org>  Fri, 05 Jan 2024 19:31:40 +0100
 
 linux (5.10.205-2) bullseye-security; urgency=high
