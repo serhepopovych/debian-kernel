@@ -1,4 +1,4 @@
-linux (5.10.206-1) UNRELEASED; urgency=medium
+linux (5.10.207-1) UNRELEASED; urgency=medium
 
   * New upstream stable update:
     https://www.kernel.org/pub/linux/kernel/v5.x/ChangeLog-5.10.206
@@ -72,6 +72,15 @@ linux (5.10.206-1) UNRELEASED; urgency=medium
     - dm-integrity: don't modify bio's immutable bio_vec in integrity_metadata()
     - Bluetooth: SMP: Fix crash when receiving new connection when debug is
       enabled
+    https://www.kernel.org/pub/linux/kernel/v5.x/ChangeLog-5.10.207
+    - Revert "scsi: core: Always send batch on reset or error handling command"
+    - Revert "scsi: core: Use a structure member to track the SCSI command
+      submitter"
+    - Revert "scsi: core: Use scsi_cmd_to_rq() instead of scsi_cmnd.request"
+    - Revert "scsi: core: Make scsi_get_lba() return the LBA"
+    - Revert "scsi: core: Introduce scsi_get_sector()"
+    - Revert "scsi: core: Add scsi_prot_ref_tag() helper"
+    - scsi: core: Always send batch on reset or error handling command
 
   [ Salvatore Bonaccorso ]
   * Bump ABI to 28
