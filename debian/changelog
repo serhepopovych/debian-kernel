@@ -1,4 +1,4 @@
-linux (5.10.207-1) UNRELEASED; urgency=medium
+linux (5.10.208-1) UNRELEASED; urgency=medium
 
   * New upstream stable update:
     https://www.kernel.org/pub/linux/kernel/v5.x/ChangeLog-5.10.206
@@ -81,6 +81,46 @@ linux (5.10.207-1) UNRELEASED; urgency=medium
     - Revert "scsi: core: Introduce scsi_get_sector()"
     - Revert "scsi: core: Add scsi_prot_ref_tag() helper"
     - scsi: core: Always send batch on reset or error handling command
+    https://www.kernel.org/pub/linux/kernel/v5.x/ChangeLog-5.10.208
+    - keys, dns: Fix missing size check of V1 server-list header
+    - block: Don't invalidate pagecache for invalid falloc modes
+    - ALSA: hda/realtek: Fix mute and mic-mute LEDs for HP ProBook 440 G6
+    - nfc: llcp_core: Hold a ref to llcp_local->dev when holding a ref to
+      llcp_local
+    - [x86] drm/i915/dp: Fix passing the correct DPCD_REV for
+      drm_dp_set_phy_test_pattern
+    - i40e: Fix filter input checks to prevent config with invalid values
+    - net: sched: em_text: fix possible memory leak in em_text_destroy()
+    - [armhf] sun9i: smp: Fix array-index-out-of-bounds read in
+      sunxi_mc_smp_init
+    - sfc: fix a double-free bug in efx_probe_filters
+    - [arm64] net: bcmgenet: Fix FCS generation for fragmented skbuffs
+    - netfilter: nftables: add loop check helper function
+    - netfilter: nft_immediate: drop chain reference counter on error
+    - net: Save and restore msg_namelen in sock_sendmsg
+    - i40e: fix use-after-free in i40e_aqc_add_filters()
+    - i40e: Restore VF MSI-X state during PCI reset
+    - net/qla3xxx: switch from 'pci_' to 'dma_' API
+    - net/qla3xxx: fix potential memleak in ql_alloc_buffer_queues
+    - asix: Add check for usbnet_get_endpoints
+    - bnxt_en: Remove mis-applied code from bnxt_cfg_ntp_filters()
+    - net: Implement missing SO_TIMESTAMPING_NEW cmsg support
+    - mm/memory-failure: check the mapcount of the precise page
+    - firewire: ohci: suppress unexpected system reboot in AMD Ryzen machines
+      and ASM108x/VT630x PCIe cards
+    - [x86] kprobes: fix incorrect return address calculation in
+      kprobe_emulate_call_indirect
+    - mm: fix unmap_mapping_range high bits shift bug
+    - mmc: core: Cancel delayed work before releasing host
+    - [powerpc*] update ppc_save_regs to save current r1 in pt_regs
+    - net: tls, update curr on splice as well (CVE-2024-0646)
+    - ipv6: remove max_size check inline with ipv4 (CVE-2023-52340)
+    - drm/qxl: fix UAF on handle creation (CVE-2023-39198)
+    - netfilter: nf_tables: Reject tables of unsupported family (CVE-2023-6040)
+    - PCI: Extract ATS disabling to a helper function
+    - PCI: Disable ATS for specific Intel IPU E2000 devices
+    - Revert "nvme: use command_id instead of req->tag in
+      trace_nvme_complete_rq()"
 
   [ Salvatore Bonaccorso ]
   * Bump ABI to 28
