@@ -365,6 +365,8 @@ linux (5.10.209-1) UNRELEASED; urgency=medium
 
   [ Salvatore Bonaccorso ]
   * Bump ABI to 28
+  * stddef: Introduce DECLARE_FLEX_ARRAY() helper
+  * smb3: Replace smb2pdu 1-element arrays with flex-arrays
 
  -- Salvatore Bonaccorso <carnil@debian.org>  Fri, 05 Jan 2024 19:31:40 +0100
 
